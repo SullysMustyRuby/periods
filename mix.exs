@@ -6,7 +6,7 @@ defmodule Periods.MixProject do
   @github "https://github.com/SullysMustyRuby/periods"
   @license "MIT"
   @name "Periods"
-  @version "0.0.1"
+  @version "0.0.2"
 
   def project do
     [
