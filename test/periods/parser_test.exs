@@ -1,4 +1,4 @@
-defmodule ParserTest do
+defmodule Periods.ParserTest do
   use ExUnit.Case, async: false
   # doctest Periods
 

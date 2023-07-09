@@ -3,6 +3,10 @@ defmodule Periods.Parser do
 
   @units Periods.all_units()
 
+  def default_unit do
+    Application.get_env(Periods, :default_unit, :second)
+  end
+
   def new(%{amount: amount, unit: unit}) when is_integer(amount) and unit in @units do
     {:ok, %Period{amount: amount, unit: unit}}
   end
@@ -56,12 +60,12 @@ defmodule Periods.Parser do
   end
 
   def new(amount) when is_integer(amount) do
-    new(%{amount: amount, unit: default_unit()})
+    new(%{amount: amount, unit: Periods.default_unit()})
   end
 
   def new(amount) when is_binary(amount) do
     case parse_amount(amount) do
-      {:ok, integer} -> new(%{amount: integer, unit: default_unit()})
+      {:ok, integer} -> new(%{amount: integer, unit: Periods.default_unit()})
       {:error, message} -> {:error, message}
     end
   end
@@ -76,10 +80,6 @@ defmodule Periods.Parser do
   end
 
   def parse_unit(_unit), do: {:error, :bad_unit_type}
-
-  defp default_unit do
-    Application.get_env(Periods, :default_unit, :second)
-  end
 
   defp parse_amount(amount) do
     case Integer.parse(amount) do

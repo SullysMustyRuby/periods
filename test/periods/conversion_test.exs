@@ -1,4 +1,4 @@
-defmodule ConversionTest do
+defmodule Periods.ConversionTest do
   use ExUnit.Case
 
   alias Periods.Conversion

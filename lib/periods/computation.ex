@@ -31,7 +31,7 @@ defmodule Periods.Computation do
   def add(%Time{} = time, period) do
     case convert(period, :second) do
       %Period{unit: :second} = converted -> Time.add(time, converted.amount, :second)
-      {:error, message} ->  {:error, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -42,7 +42,7 @@ defmodule Periods.Computation do
   def add(%Date{} = date, period) do
     case convert(period, :day) do
       %Period{unit: :day} = converted -> Date.add(date, converted.amount)
-      {:error, message} ->  {:error, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -50,10 +50,11 @@ defmodule Periods.Computation do
     {:error, :invalid_month_addition}
   end
 
-  def add(%DateTime{} = date_time, %Period{unit: unit} = period) when unit not in @month_restrictions do
+  def add(%DateTime{} = date_time, %Period{unit: unit} = period)
+      when unit not in @month_restrictions do
     case convert(period, :second) do
       %Period{unit: :second} = converted -> DateTime.add(date_time, converted.amount, :second)
-      {:error, message} ->  {:error, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -65,10 +66,14 @@ defmodule Periods.Computation do
     {:error, :invalid_month_addition}
   end
 
-  def add(%NaiveDateTime{} = date_time, %Period{unit: unit} = period) when unit not in @month_restrictions do
+  def add(%NaiveDateTime{} = date_time, %Period{unit: unit} = period)
+      when unit not in @month_restrictions do
     case convert(period, :second) do
-      %Period{unit: :second} = converted -> NaiveDateTime.add(date_time, converted.amount, :second)
-      {:error, message} ->  {:error, message}
+      %Period{unit: :second} = converted ->
+        NaiveDateTime.add(date_time, converted.amount, :second)
+
+      {:error, message} ->
+        {:error, message}
     end
   end
 
@@ -101,7 +106,7 @@ defmodule Periods.Computation do
   def subtract(%Time{} = time, period) do
     case convert(period, :second) do
       %Period{unit: :second} = converted -> Time.add(time, -converted.amount)
-      {:error, message} ->  {:error, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -112,7 +117,7 @@ defmodule Periods.Computation do
   def subtract(%Date{} = date, period) do
     case convert(period, :day) do
       %Period{unit: :day} = converted -> Date.add(date, -converted.amount)
-      {:error, message} ->  {:error, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -120,10 +125,11 @@ defmodule Periods.Computation do
     {:error, :invalid_month_subtraction}
   end
 
-  def subtract(%DateTime{} = date_time, %Period{unit: unit} = period) when unit not in @month_restrictions do
+  def subtract(%DateTime{} = date_time, %Period{unit: unit} = period)
+      when unit not in @month_restrictions do
     case convert(period, :second) do
       %Period{unit: :second} = converted -> DateTime.add(date_time, -converted.amount, :second)
-      {:error, message} ->  {:error, message}
+      {:error, message} -> {:error, message}
     end
   end
 
@@ -135,10 +141,14 @@ defmodule Periods.Computation do
     {:error, :invalid_month_addition}
   end
 
-  def subtract(%NaiveDateTime{} = date_time, %Period{unit: unit} = period) when unit not in @month_restrictions do
+  def subtract(%NaiveDateTime{} = date_time, %Period{unit: unit} = period)
+      when unit not in @month_restrictions do
     case convert(period, :second) do
-      %Period{unit: :second} = converted -> NaiveDateTime.add(date_time, -converted.amount, :second)
-      {:error, message} ->  {:error, message}
+      %Period{unit: :second} = converted ->
+        NaiveDateTime.add(date_time, -converted.amount, :second)
+
+      {:error, message} ->
+        {:error, message}
     end
   end
 

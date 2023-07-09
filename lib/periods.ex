@@ -13,6 +13,8 @@ defmodule Periods do
 
   defdelegate convert(period, unit), to: Conversion
 
+  def default_unit, do: Application.get_env(Periods, :default_unit, :second)
+
   defdelegate new(value), to: Parser
 
   defdelegate subtract(value_1, value_2), to: Computation

@@ -1,4 +1,4 @@
-defmodule ComputationTest do
+defmodule Periods.ComputationTest do
   use ExUnit.Case
 
   alias Periods.Computation
