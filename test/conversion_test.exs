@@ -34,6 +34,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :second)
       assert period.amount == 10
       assert period.unit == :second
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :second)
+      assert period.amount == 0
+      assert period.unit == :second
     end
 
     test "millisecond: converts to minute" do
@@ -41,6 +46,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :minute)
       assert period.amount == 15
+      assert period.unit == :minute
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :minute)
+      assert period.amount == 0
       assert period.unit == :minute
     end
 
@@ -50,6 +60,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :hour)
       assert period.amount == 2
       assert period.unit == :hour
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :hour)
+      assert period.amount == 0
+      assert period.unit == :hour
     end
 
     test "millisecond: converts to day" do
@@ -57,6 +72,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :day)
       assert period.amount == 5
+      assert period.unit == :day
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :day)
+      assert period.amount == 0
       assert period.unit == :day
     end
 
@@ -66,6 +86,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :week)
       assert period.amount == 2
       assert period.unit == :week
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :week)
+      assert period.amount == 0
+      assert period.unit == :week
     end
 
     test "millisecond: converts to year" do
@@ -74,6 +99,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "millisecond: converts to decade" do
@@ -81,6 +111,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :millisecond})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -97,6 +132,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :minute)
       assert period.amount == 15
       assert period.unit == :minute
+
+      {:ok, period} = Periods.new({1, :second})
+      period = Conversion.convert(period, :minute)
+      assert period.amount == 0
+      assert period.unit == :minute
     end
 
     test "second: converts to hour" do
@@ -105,6 +145,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :hour)
       assert period.amount == 2
       assert period.unit == :hour
+
+      {:ok, period} = Periods.new({1, :second})
+      period = Conversion.convert(period, :minute)
+      assert period.amount == 0
+      assert period.unit == :minute
     end
 
     test "second: converts to day" do
@@ -112,6 +157,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :second})
       period = Conversion.convert(period, :day)
       assert period.amount == 5
+      assert period.unit == :day
+
+      {:ok, period} = Periods.new({1, :second})
+      period = Conversion.convert(period, :day)
+      assert period.amount == 0
       assert period.unit == :day
     end
 
@@ -121,6 +171,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :week)
       assert period.amount == 2
       assert period.unit == :week
+
+      {:ok, period} = Periods.new({1, :second})
+      period = Conversion.convert(period, :week)
+      assert period.amount == 0
+      assert period.unit == :week
     end
 
     test "second: converts to year" do
@@ -129,6 +184,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :second})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "second: converts to decade" do
@@ -136,6 +196,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :second})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :second})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -159,6 +224,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :hour)
       assert period.amount == 2
       assert period.unit == :hour
+
+      {:ok, period} = Periods.new({1, :minute})
+      period = Conversion.convert(period, :hour)
+      assert period.amount == 0
+      assert period.unit == :hour
     end
 
     test "minute: converts to day" do
@@ -166,6 +236,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :minute})
       period = Conversion.convert(period, :day)
       assert period.amount == 5
+      assert period.unit == :day
+
+      {:ok, period} = Periods.new({1, :minute})
+      period = Conversion.convert(period, :day)
+      assert period.amount == 0
       assert period.unit == :day
     end
 
@@ -175,6 +250,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :week)
       assert period.amount == 2
       assert period.unit == :week
+
+      {:ok, period} = Periods.new({1, :minute})
+      period = Conversion.convert(period, :week)
+      assert period.amount == 0
+      assert period.unit == :week
     end
 
     test "minute: converts to year" do
@@ -183,6 +263,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :minute})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "minute: converts to decade" do
@@ -190,6 +275,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :minute})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :minute})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -220,6 +310,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :day)
       assert period.amount == 5
       assert period.unit == :day
+
+      {:ok, period} = Periods.new({1, :hour})
+      period = Conversion.convert(period, :day)
+      assert period.amount == 0
+      assert period.unit == :day
     end
 
     test "hour: converts to week" do
@@ -227,6 +322,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :hour})
       period = Conversion.convert(period, :week)
       assert period.amount == 2
+      assert period.unit == :week
+
+      {:ok, period} = Periods.new({1, :hour})
+      period = Conversion.convert(period, :week)
+      assert period.amount == 0
       assert period.unit == :week
     end
 
@@ -236,6 +336,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :hour})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "hour: converts to decade" do
@@ -243,6 +348,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :hour})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :hour})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -280,6 +390,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :week)
       assert period.amount == 2
       assert period.unit == :week
+
+      {:ok, period} = Periods.new({1, :day})
+      period = Conversion.convert(period, :week)
+      assert period.amount == 0
+      assert period.unit == :week
     end
 
     test "day: converts to year" do
@@ -288,6 +403,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :day})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "day: converts to decade" do
@@ -295,6 +415,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :day})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :day})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -339,6 +464,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :week})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "week: converts to decade" do
@@ -346,6 +476,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :week})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :week})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -375,6 +510,11 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
+
+      {:ok, period} = Periods.new({1, :month})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 0
+      assert period.unit == :year
     end
 
     test "month: converts to decade" do
@@ -382,6 +522,11 @@ defmodule ConversionTest do
       {:ok, period} = Periods.new({amount, :month})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :month})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -427,11 +572,23 @@ defmodule ConversionTest do
       assert period.unit == :week
     end
 
+    test "year: converts to month" do
+      {:ok, period} = Periods.new({2, :year})
+      period = Conversion.convert(period, :month)
+      assert period.amount == 2 * 12
+      assert period.unit == :month
+    end
+
     test "year: converts to decade" do
       amount = 2 * 10
       {:ok, period} = Periods.new({amount, :year})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
+      assert period.unit == :decade
+
+      {:ok, period} = Periods.new({1, :year})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 0
       assert period.unit == :decade
     end
 
@@ -475,6 +632,13 @@ defmodule ConversionTest do
       period = Conversion.convert(period, :week)
       assert period.amount == 2 * 10 * 52
       assert period.unit == :week
+    end
+
+    test "decade: converts to month" do
+      {:ok, period} = Periods.new({2, :decade})
+      period = Conversion.convert(period, :month)
+      assert period.amount == 2 * 10 * 12
+      assert period.unit == :month
     end
 
     test "decade: converts to year" do

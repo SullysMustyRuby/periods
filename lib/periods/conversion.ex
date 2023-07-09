@@ -226,8 +226,6 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{}, :month), do: {:error, :cannot_convert_to_month}
-
   def convert(%Period{unit: :year} = period, :millisecond) do
     new_amount = period.amount * 31_536_000_000
     %Period{amount: new_amount, unit: :millisecond}
@@ -256,6 +254,11 @@ defmodule Periods.Conversion do
   def convert(%Period{unit: :year} = period, :week) do
     new_amount = period.amount * 52
     %Period{amount: new_amount, unit: :week}
+  end
+
+  def convert(%Period{unit: :year} = period, :month) do
+    new_amount = period.amount * 12
+    %Period{amount: new_amount, unit: :month}
   end
 
   def convert(%Period{unit: :year} = period, :decade) do
@@ -293,10 +296,17 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :week}
   end
 
+  def convert(%Period{unit: :decade} = period, :month) do
+    new_amount = period.amount * 120
+    %Period{amount: new_amount, unit: :month}
+  end
+
   def convert(%Period{unit: :decade} = period, :year) do
     new_amount = period.amount * 10
     %Period{amount: new_amount, unit: :year}
   end
+
+  def convert(%Period{}, :month), do: {:error, :cannot_convert_to_month}
 
   def convert(%Period{} = period, unit) do
     case Parser.parse_unit(unit) do
