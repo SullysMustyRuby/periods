@@ -3,16 +3,7 @@ defmodule Periods do
   Documentation for `Periods`.
   """
 
-  @doc """
-  Hello world.
+  alias Periods.Parser
 
-  ## Examples
-
-      iex> Periods.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
+  defdelegate new(value), to: Parser
 end
