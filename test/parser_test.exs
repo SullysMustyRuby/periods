@@ -1,5 +1,5 @@
 defmodule ParserTest do
-  use ExUnit.Case,  async: false
+  use ExUnit.Case, async: false
   # doctest Periods
 
   alias Periods.Period
@@ -78,5 +78,4 @@ defmodule ParserTest do
       end
     end
   end
-
 end

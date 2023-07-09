@@ -1,8 +1,7 @@
 defmodule Periods.Parser do
-
   alias Periods.Period
 
-  @units [:milisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
+  @units Periods.all_units()
 
   def new(%{amount: amount, unit: unit}) when is_integer(amount) and unit in @units do
     {:ok, %Period{amount: amount, unit: unit}}
