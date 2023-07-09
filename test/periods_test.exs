@@ -20,6 +20,10 @@ defmodule PeriodsTest do
       end
     end
 
+    test "map: with a binary unit parses into proper unit" do
+      assert {:ok, %Period{amount: 100, unit: :day}} == Period.new(%{amount: "100", unit: "day"})
+    end
+
     test "map: with invalid unit returns error" do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
         {:error, message} = Period.new(%{amount: 1, unit: bad_unit})
@@ -42,9 +46,13 @@ defmodule PeriodsTest do
       end
     end
 
+    test "tuple: with a binary unit parses into proper unit" do
+      assert {:ok, %Period{amount: 100, unit: :day}} == Period.new({"100", "day"})
+    end
+
     test "tuple: with invalid unit returns error" do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
-        {:error, message} = Period.new(%{amount: 1, unit: bad_unit})
+        {:error, message} = Period.new({1, bad_unit})
         assert message == :bad_unit_type
       end
     end

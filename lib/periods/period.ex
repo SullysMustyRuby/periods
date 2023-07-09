@@ -14,6 +14,13 @@ defmodule Periods.Period do
     end
   end
 
+  def new(%{amount: amount, unit: unit}) when is_binary(unit) do
+    case parse_unit(unit) do
+      {:ok, parsed_unit} -> new(%{amount: amount, unit: parsed_unit})
+      {:error, message} -> {:error, message}
+    end
+  end
+
   def new(%{amount: _, unit: unit}) when unit in @units do
     {:error, :amount_must_be_an_integer}
   end
@@ -31,6 +38,21 @@ defmodule Periods.Period do
       {:ok, integer} -> new(%{amount: integer, unit: unit})
       {:error, message} -> {:error, message}
     end
+  end
+
+  def new({amount, unit}) when is_binary(unit) do
+    case parse_unit(unit) do
+      {:ok, parsed_unit} -> new(%{amount: amount, unit: parsed_unit})
+      {:error, message} -> {:error, message}
+    end
+  end
+
+  def new({_amount, unit}) when unit in @units do
+    {:error, :amount_must_be_an_integer}
+  end
+
+  def new({_amount, unit}) when unit not in @units do
+    {:error, :bad_unit_type}
   end
 
   def new(amount) when is_integer(amount) do
@@ -55,6 +77,13 @@ defmodule Periods.Period do
       {integer, ""} -> {:ok, integer}
       {_integer, remainder} when remainder != "" -> {:error, :amount_must_be_an_integer}
       _ -> {:error, :cannot_parse_amount}
+    end
+  end
+
+  defp parse_unit(unit) do
+    case String.to_existing_atom(unit) do
+      parsed_unit when parsed_unit in @units -> {:ok, parsed_unit}
+      _ -> {:error, :bad_unit_type}
     end
   end
 end
