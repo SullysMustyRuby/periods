@@ -1,13 +1,34 @@
 defmodule Periods.MixProject do
   use Mix.Project
 
+  @app :periods
+  @author "Erin Boeger"
+  @github "https://github.com/SullysMustyRuby/periods"
+  @license "MIT"
+  @name "Periods"
+  @version "0.0.1"
+
   def project do
     [
-      app: :periods,
-      version: "0.1.0",
+      app: @app,
+      version: @version,
       elixir: "~> 1.15",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package(),
+
+      # ExDoc
+      name: @name,
+      source_url: @github,
+      homepage_url: @github,
+      docs: [
+        main: @name,
+        canonical: "https://hexdocs.pm/#{@app}",
+        extras: ["README.md"]
+      ],
+      aliases: [
+        test: "test --no-start"
+      ]
     ]
   end
 
@@ -23,6 +44,16 @@ defmodule Periods.MixProject do
     [
       {:decimal, "~> 2.1"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+    ]
+  end
+
+  defp package do
+    [
+      name: @app,
+      maintainers: [@author],
+      licenses: [@license],
+      files: ~w(mix.exs lib README.md),
+      links: %{"Github" => @github}
     ]
   end
 end
