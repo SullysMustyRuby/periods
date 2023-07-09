@@ -6,44 +6,44 @@ defmodule Periods.Conversion do
 
   def convert(%Period{unit: unit} = period, unit) when unit in @units, do: period
 
-  def convert(%Period{unit: :milisecond} = period, :second) do
+  def convert(%Period{unit: :millisecond} = period, :second) do
     new_amount = Decimal.div_int(period.amount, 1000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :second}
   end
 
-  def convert(%Period{unit: :milisecond} = period, :minute) do
+  def convert(%Period{unit: :millisecond} = period, :minute) do
     new_amount = Decimal.div_int(period.amount, 60_000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :minute}
   end
 
-  def convert(%Period{unit: :milisecond} = period, :hour) do
+  def convert(%Period{unit: :millisecond} = period, :hour) do
     new_amount = Decimal.div_int(period.amount, 3_600_000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :hour}
   end
 
-  def convert(%Period{unit: :milisecond} = period, :day) do
+  def convert(%Period{unit: :millisecond} = period, :day) do
     new_amount = Decimal.div_int(period.amount, 86_400_000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :day}
   end
 
-  def convert(%Period{unit: :milisecond} = period, :week) do
+  def convert(%Period{unit: :millisecond} = period, :week) do
     new_amount = Decimal.div_int(period.amount, 604_800_000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :week}
   end
 
-  def convert(%Period{unit: :milisecond} = period, :year) do
+  def convert(%Period{unit: :millisecond} = period, :year) do
     new_amount = Decimal.div_int(period.amount, 31_536_000_000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :year}
   end
 
-  def convert(%Period{unit: :milisecond} = period, :decade) do
+  def convert(%Period{unit: :millisecond} = period, :decade) do
     new_amount = Decimal.div_int(period.amount, 315_360_000_000) |> Decimal.to_integer()
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :second} = period, :milisecond) do
+  def convert(%Period{unit: :second} = period, :millisecond) do
     new_amount = period.amount * 1000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :second} = period, :minute) do
@@ -76,9 +76,9 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :minute} = period, :milisecond) do
+  def convert(%Period{unit: :minute} = period, :millisecond) do
     new_amount = period.amount * 60_000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :minute} = period, :second) do
@@ -111,9 +111,9 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :hour} = period, :milisecond) do
+  def convert(%Period{unit: :hour} = period, :millisecond) do
     new_amount = period.amount * 3_600_000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :hour} = period, :second) do
@@ -146,9 +146,9 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :day} = period, :milisecond) do
+  def convert(%Period{unit: :day} = period, :millisecond) do
     new_amount = period.amount * 86_400_000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :day} = period, :second) do
@@ -181,9 +181,9 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :week} = period, :milisecond) do
+  def convert(%Period{unit: :week} = period, :millisecond) do
     new_amount = period.amount * 604_800_000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :week} = period, :second) do
@@ -216,9 +216,21 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :year} = period, :milisecond) do
+  def convert(%Period{unit: :month} = period, :year) do
+    new_amount = Decimal.div_int(period.amount, 12) |> Decimal.to_integer()
+    %Period{amount: new_amount, unit: :year}
+  end
+
+  def convert(%Period{unit: :month} = period, :decade) do
+    new_amount = Decimal.div_int(period.amount, 120) |> Decimal.to_integer()
+    %Period{amount: new_amount, unit: :decade}
+  end
+
+  def convert(%Period{}, :month), do: {:error, :cannot_convert_to_month}
+
+  def convert(%Period{unit: :year} = period, :millisecond) do
     new_amount = period.amount * 31_536_000_000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :year} = period, :second) do
@@ -251,9 +263,9 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :decade}
   end
 
-  def convert(%Period{unit: :decade} = period, :milisecond) do
+  def convert(%Period{unit: :decade} = period, :millisecond) do
     new_amount = period.amount * 315_360_000_000
-    %Period{amount: new_amount, unit: :milisecond}
+    %Period{amount: new_amount, unit: :millisecond}
   end
 
   def convert(%Period{unit: :decade} = period, :second) do

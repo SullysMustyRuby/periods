@@ -1,4 +1,6 @@
 defmodule Periods.Computation do
+  import Periods.Conversion
+
   alias Periods.Period
 
   @index_units Enum.with_index(Periods.all_units())
@@ -10,6 +12,7 @@ defmodule Periods.Computation do
 
   def add(%Period{} = period_1, %Period{} = period_2) do
     unit = lowest_unit(period_1.unit, period_2.unit)
+    add(convert(period_1, unit), convert(period_2, unit))
   end
 
   defp lowest_unit(unit_1, unit_2) do

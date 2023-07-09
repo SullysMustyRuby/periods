@@ -30,7 +30,7 @@ defmodule ConversionTest do
 
     test "millisecond: converts to second" do
       amount = 10 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :second)
       assert period.amount == 10
       assert period.unit == :second
@@ -38,7 +38,7 @@ defmodule ConversionTest do
 
     test "millisecond: converts to minute" do
       amount = 15 * 60 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :minute)
       assert period.amount == 15
       assert period.unit == :minute
@@ -46,7 +46,7 @@ defmodule ConversionTest do
 
     test "millisecond: converts to hour" do
       amount = 2 * 60 * 60 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :hour)
       assert period.amount == 2
       assert period.unit == :hour
@@ -54,7 +54,7 @@ defmodule ConversionTest do
 
     test "millisecond: converts to day" do
       amount = 5 * 24 * 60 * 60 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :day)
       assert period.amount == 5
       assert period.unit == :day
@@ -62,7 +62,7 @@ defmodule ConversionTest do
 
     test "millisecond: converts to week" do
       amount = 2 * 7 * 24 * 60 * 60 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :week)
       assert period.amount == 2
       assert period.unit == :week
@@ -70,7 +70,7 @@ defmodule ConversionTest do
 
     test "millisecond: converts to year" do
       amount = 2 * 365 * 24 * 60 * 60 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :year)
       assert period.amount == 2
       assert period.unit == :year
@@ -78,17 +78,17 @@ defmodule ConversionTest do
 
     test "millisecond: converts to decade" do
       amount = 2 * 10 * 365 * 24 * 60 * 60 * 1000
-      {:ok, period} = Periods.new({amount, :milisecond})
+      {:ok, period} = Periods.new({amount, :millisecond})
       period = Conversion.convert(period, :decade)
       assert period.amount == 2
       assert period.unit == :decade
     end
 
-    test "second: converts to milisecond" do
+    test "second: converts to millisecond" do
       {:ok, period} = Periods.new({10, :second})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 10 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "second: converts to minute" do
@@ -139,11 +139,11 @@ defmodule ConversionTest do
       assert period.unit == :decade
     end
 
-    test "minute: converts to milisecond" do
+    test "minute: converts to millisecond" do
       {:ok, period} = Periods.new({10, :minute})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 10 * 60 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "minute: converts to second" do
@@ -193,11 +193,11 @@ defmodule ConversionTest do
       assert period.unit == :decade
     end
 
-    test "hour: converts to milisecond" do
+    test "hour: converts to millisecond" do
       {:ok, period} = Periods.new({15, :hour})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 15 * 60 * 60 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "hour: converts to second" do
@@ -246,11 +246,11 @@ defmodule ConversionTest do
       assert period.unit == :decade
     end
 
-    test "day: converts to milisecond" do
+    test "day: converts to millisecond" do
       {:ok, period} = Periods.new({15, :day})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 15 * 24 * 60 * 60 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "day: converts to second" do
@@ -298,11 +298,11 @@ defmodule ConversionTest do
       assert period.unit == :decade
     end
 
-    test "week: converts to milisecond" do
+    test "week: converts to millisecond" do
       {:ok, period} = Periods.new({15, :week})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 15 * 7 * 24 * 60 * 60 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "week: converts to second" do
@@ -349,11 +349,47 @@ defmodule ConversionTest do
       assert period.unit == :decade
     end
 
-    test "year: converts to milisecond" do
+    test "month: returns error for milliseconds" do
+      {:ok, period} = Periods.new({10 * 24 * 60 * 60 * 1000, :millisecond})
+      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+    end
+
+    test "month: returns error for seconds" do
+      {:ok, period} = Periods.new({100 * 24 * 60 * 60, :second})
+      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+    end
+
+    test "month: returns error for minute" do
+      {:ok, period} = Periods.new({100 * 60 * 60, :minute})
+      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+    end
+
+    test "month: returns error for hour" do
+      {:ok, period} = Periods.new({100 * 60, :hour})
+      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+    end
+
+    test "month: converts to year" do
+      amount = 2 * 12
+      {:ok, period} = Periods.new({amount, :month})
+      period = Conversion.convert(period, :year)
+      assert period.amount == 2
+      assert period.unit == :year
+    end
+
+    test "month: converts to decade" do
+      amount = 2 * 10 * 12
+      {:ok, period} = Periods.new({amount, :month})
+      period = Conversion.convert(period, :decade)
+      assert period.amount == 2
+      assert period.unit == :decade
+    end
+
+    test "year: converts to millisecond" do
       {:ok, period} = Periods.new({2, :year})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 2 * 365 * 24 * 60 * 60 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "year: converts to second" do
@@ -399,11 +435,11 @@ defmodule ConversionTest do
       assert period.unit == :decade
     end
 
-    test "decade: converts to milisecond" do
+    test "decade: converts to millisecond" do
       {:ok, period} = Periods.new({2, :decade})
-      period = Conversion.convert(period, :milisecond)
+      period = Conversion.convert(period, :millisecond)
       assert period.amount == 2 * 10 * 365 * 24 * 60 * 60 * 1000
-      assert period.unit == :milisecond
+      assert period.unit == :millisecond
     end
 
     test "decade: converts to second" do

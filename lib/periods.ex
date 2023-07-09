@@ -6,7 +6,7 @@ defmodule Periods do
   alias Periods.Conversion
   alias Periods.Parser
 
-  @units [:milisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
+  @units [:millisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
 
   defdelegate convert(period, unit), to: Conversion
 
