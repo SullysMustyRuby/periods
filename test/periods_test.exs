@@ -25,7 +25,7 @@ defmodule PeriodsTest do
     end
 
     test "with no default set returns seconds" do
-      assert nil ==  Application.get_env(Periods, :default_unit)
+      assert nil == Application.get_env(Periods, :default_unit)
       assert :second == Periods.default_unit()
     end
   end

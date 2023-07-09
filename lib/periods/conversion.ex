@@ -4,6 +4,7 @@ defmodule Periods.Conversion do
 
   @units Periods.all_units()
 
+  @spec convert(Period.t(), atom() | String.t()) :: Period.t() | {:error, atom()}
   def convert(%Period{unit: unit} = period, unit) when unit in @units, do: period
 
   def convert(%Period{unit: :millisecond} = period, :second) do

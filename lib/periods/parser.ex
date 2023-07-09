@@ -3,10 +3,9 @@ defmodule Periods.Parser do
 
   @units Periods.all_units()
 
-  def default_unit do
-    Application.get_env(Periods, :default_unit, :second)
-  end
+  @type parse_type :: map() | tuple() | integer() | binary()
 
+  @spec new(parse_type()) :: {:ok, Period.t()} | {:error, atom()}
   def new(%{amount: amount, unit: unit}) when is_integer(amount) and unit in @units do
     {:ok, %Period{amount: amount, unit: unit}}
   end
@@ -72,6 +71,7 @@ defmodule Periods.Parser do
 
   def new(_amount), do: {:error, :amount_must_be_an_integer}
 
+  @spec new(binary()) :: {:ok, atom()} | {:error, atom()}
   def parse_unit(unit) when is_binary(unit) do
     case String.to_existing_atom(unit) do
       parsed_unit when parsed_unit in @units -> {:ok, parsed_unit}

@@ -13,11 +13,13 @@ defmodule Periods do
 
   defdelegate convert(period, unit), to: Conversion
 
+  @spec default_unit() :: atom()
   def default_unit, do: Application.get_env(Periods, :default_unit, :second)
 
   defdelegate new(value), to: Parser
 
   defdelegate subtract(value_1, value_2), to: Computation
 
+  @spec all_units() :: list(atom())
   def all_units, do: @units
 end

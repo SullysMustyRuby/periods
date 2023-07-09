@@ -3,9 +3,10 @@ defmodule Periods.Computation do
 
   alias Periods.Period
 
-  @index_units Enum.with_index(Periods.all_units())
   @month_restrictions [:millisecond, :second, :minute, :hour, :week]
+  @type computation :: Period.t() | Time.t() | Date.t() | DateTime.t() | NaiveDateTime.t()
 
+  @spec add(computation(), Period.t()) :: computation() | {:error, atom()}
   def add(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
     {:error, :invalid_month_addition}
   end
@@ -81,6 +82,7 @@ defmodule Periods.Computation do
     {:error, :invalid_month_addition}
   end
 
+  @spec subtract(computation(), Period.t()) :: computation() | {:error, atom()}
   def subtract(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
     {:error, :invalid_month_subtraction}
   end
@@ -157,8 +159,9 @@ defmodule Periods.Computation do
   end
 
   defp lowest_unit(unit_1, unit_2) do
-    unit_1_index = Keyword.get(@index_units, unit_1)
-    unit_2_index = Keyword.get(@index_units, unit_2)
+    index_units = Enum.with_index(Periods.all_units())
+    unit_1_index = Keyword.get(index_units, unit_1)
+    unit_2_index = Keyword.get(index_units, unit_2)
 
     case unit_1_index < unit_2_index do
       true -> unit_1
