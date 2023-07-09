@@ -21,7 +21,8 @@ defmodule Periods.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:decimal, "~> 2.1"}
+      {:decimal, "~> 2.1"},
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
     ]
   end
 end

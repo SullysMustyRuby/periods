@@ -1,6 +1,5 @@
 # Periods
-
-**TODO: Add description**
+A convenient group of functions and struct to help make working with dates and times easier.
 
 ## Installation
 
@@ -10,7 +9,7 @@ by adding `periods` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:periods, "~> 0.1.0"}
+    {:periods, "~> 0.0.1"}
   ]
 end
 ```

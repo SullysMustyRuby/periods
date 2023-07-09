@@ -24,3 +24,7 @@ periods-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignore all DS_Store
+.DS_Store
+*/.DS_Store

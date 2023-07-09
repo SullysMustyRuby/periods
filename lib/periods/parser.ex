@@ -1,11 +1,10 @@
 defmodule Periods.Parser do
+  @moduledoc false
+
   alias Periods.Period
 
   @units Periods.all_units()
 
-  @type parse_type :: map() | tuple() | integer() | binary()
-
-  @spec new(parse_type()) :: {:ok, Period.t()} | {:error, atom()}
   def new(%{amount: amount, unit: unit}) when is_integer(amount) and unit in @units do
     {:ok, %Period{amount: amount, unit: unit}}
   end

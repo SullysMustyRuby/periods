@@ -1,12 +1,12 @@
 defmodule Periods.Computation do
+  @moduledoc false
+
   import Periods.Conversion
 
   alias Periods.Period
 
   @month_restrictions [:millisecond, :second, :minute, :hour, :week]
-  @type computation :: Period.t() | Time.t() | Date.t() | DateTime.t() | NaiveDateTime.t()
 
-  @spec add(computation(), Period.t()) :: computation() | {:error, atom()}
   def add(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
     {:error, :invalid_month_addition}
   end
@@ -51,16 +51,11 @@ defmodule Periods.Computation do
     {:error, :invalid_month_addition}
   end
 
-  def add(%DateTime{} = date_time, %Period{unit: unit} = period)
-      when unit not in @month_restrictions do
+  def add(%DateTime{} = date_time, %Period{} = period) do
     case convert(period, :second) do
       %Period{unit: :second} = converted -> DateTime.add(date_time, converted.amount, :second)
       {:error, message} -> {:error, message}
     end
-  end
-
-  def add(%DateTime{}, %Period{}) do
-    {:error, :invalid_month_addition}
   end
 
   def add(%NaiveDateTime{}, %Period{unit: :month}) do
@@ -82,7 +77,6 @@ defmodule Periods.Computation do
     {:error, :invalid_month_addition}
   end
 
-  @spec subtract(computation(), Period.t()) :: computation() | {:error, atom()}
   def subtract(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
     {:error, :invalid_month_subtraction}
   end
@@ -127,16 +121,11 @@ defmodule Periods.Computation do
     {:error, :invalid_month_subtraction}
   end
 
-  def subtract(%DateTime{} = date_time, %Period{unit: unit} = period)
-      when unit not in @month_restrictions do
+  def subtract(%DateTime{} = date_time, %Period{} = period) do
     case convert(period, :second) do
       %Period{unit: :second} = converted -> DateTime.add(date_time, -converted.amount, :second)
       {:error, message} -> {:error, message}
     end
-  end
-
-  def subtract(%DateTime{}, %Period{unit: unit}) when unit in @month_restrictions do
-    {:error, :invalid_month_subtraction}
   end
 
   def subtract(%NaiveDateTime{}, %Period{unit: :month}) do

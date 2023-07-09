@@ -103,15 +103,6 @@ defmodule Periods.ComputationTest do
       assert result == ~U[2023-01-13 23:50:07Z]
     end
 
-    test "DateTime: with a month restricted value returns error when trying to add to a DateTime" do
-      {:ok, datetime, 0} = DateTime.from_iso8601("2023-01-03T23:50:07Z")
-
-      for bad_unit <- [:millisecond, :second, :minute, :hour, :week, :month] do
-        {:ok, period} = Periods.new({10, bad_unit})
-        assert {:error, :invalid_month_addition} == Computation.add(datetime, period)
-      end
-    end
-
     test "NaiveDateTime: with a non month value adds the period to a NaiveDateTime" do
       {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-03 23:50:07")
       {:ok, period} = Periods.new({10, :day})
@@ -236,15 +227,6 @@ defmodule Periods.ComputationTest do
 
       result = Computation.subtract(datetime, period)
       assert result == ~U[2023-01-13 23:50:07Z]
-    end
-
-    test "DateTime: with a month restricted value returns error when trying to add to a DateTime" do
-      {:ok, datetime, 0} = DateTime.from_iso8601("2023-01-03T23:50:07Z")
-
-      for bad_unit <- [:millisecond, :second, :minute, :hour, :week, :month] do
-        {:ok, period} = Periods.new({10, bad_unit})
-        assert {:error, :invalid_month_subtraction} == Computation.subtract(datetime, period)
-      end
     end
 
     test "NaiveDateTime: with a non month value subtracts the period from a NaiveDateTime" do
