@@ -9,6 +9,25 @@ defmodule ConversionTest do
       assert period == Conversion.convert(period, :day)
     end
 
+    test "when the new unit is binary parses and converts" do
+      {:ok, period} = Periods.new({100, "day"})
+      assert period == Conversion.convert(period, :day)
+    end
+
+    test "when the new unit is invalid returns error" do
+      for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
+        {:ok, period} = Periods.new({100, :day})
+        {:error, message} = Conversion.convert(period, bad_unit)
+        assert message == :bad_unit_type
+      end
+    end
+
+    test "with invalid arguments returns error tuple" do
+      for bad_period <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
+        assert {:error, :invalid_arguments} == Conversion.convert(bad_period, :second)
+      end
+    end
+
     test "millisecond: converts to second" do
       amount = 10 * 1000
       {:ok, period} = Periods.new({amount, :milisecond})

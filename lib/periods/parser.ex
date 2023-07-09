@@ -68,6 +68,15 @@ defmodule Periods.Parser do
 
   def new(_amount), do: {:error, :amount_must_be_an_integer}
 
+  def parse_unit(unit) when is_binary(unit) do
+    case String.to_existing_atom(unit) do
+      parsed_unit when parsed_unit in @units -> {:ok, parsed_unit}
+      _ -> {:error, :bad_unit_type}
+    end
+  end
+
+  def parse_unit(_unit), do: {:error, :bad_unit_type}
+
   defp default_unit do
     Application.get_env(Periods, :default_unit, :second)
   end
@@ -77,13 +86,6 @@ defmodule Periods.Parser do
       {integer, ""} -> {:ok, integer}
       {_integer, remainder} when remainder != "" -> {:error, :amount_must_be_an_integer}
       _ -> {:error, :cannot_parse_amount}
-    end
-  end
-
-  defp parse_unit(unit) do
-    case String.to_existing_atom(unit) do
-      parsed_unit when parsed_unit in @units -> {:ok, parsed_unit}
-      _ -> {:error, :bad_unit_type}
     end
   end
 end

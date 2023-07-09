@@ -1,7 +1,10 @@
 defmodule Periods.Conversion do
+  alias Periods.Parser
   alias Periods.Period
 
-  def convert(%Period{unit: unit} = period, unit), do: period
+  @units Periods.all_units()
+
+  def convert(%Period{unit: unit} = period, unit) when unit in @units, do: period
 
   def convert(%Period{unit: :milisecond} = period, :second) do
     new_amount = Decimal.div_int(period.amount, 1000) |> Decimal.to_integer()
@@ -282,4 +285,13 @@ defmodule Periods.Conversion do
     new_amount = period.amount * 10
     %Period{amount: new_amount, unit: :year}
   end
+
+  def convert(%Period{} = period, unit) do
+    case Parser.parse_unit(unit) do
+      {:ok, parsed_unit} -> convert(period, parsed_unit)
+      {:error, message} -> {:error, message}
+    end
+  end
+
+  def convert(_period, _unit), do: {:error, :invalid_arguments}
 end
