@@ -41,7 +41,7 @@ defmodule Periods.MixProject do
   end
 
   defp description do
-    "Helper for converting and performing math operations on values of time"
+    "Helper for converting and performing math operations on values of Time, Date, DateTime, and NaiveDateTime along with storing in database with Ecto.Type"
   end
 
   # Run "mix help deps" to learn about dependencies.
