@@ -144,9 +144,11 @@ defmodule Periods do
       ~T[14:08:45.831176]
 
       iex> today = Date.utc_today()
-      ~D[2023-07-09]
-      iex> Periods.subtract(today, %Period{amount: 1, unit: :millisecond})
-      ~D[2023-07-09]
+      ~D[2023-07-10]
+      iex> Periods.subtract(today, %Period{amount: 10000000000000, unit: :millisecond})
+      ~D[1706-08-21]
+      iex> Periods.subtract(today, %Period{amount: 3, unit: :year})
+      ~D[2020-07-10]
   """
   @spec subtract(computation(), Period.t()) :: computation() | {:error, atom()}
   defdelegate subtract(value_1, value_2), to: Computation
