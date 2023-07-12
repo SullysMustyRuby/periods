@@ -17,9 +17,15 @@ defmodule Periods do
   alias Periods.Computation
   alias Periods.Conversion
   alias Periods.Parser
+  alias Periods.Period
 
   @type computation :: Period.t() | Time.t() | Date.t() | DateTime.t() | NaiveDateTime.t()
-  @type parse_type :: map() | tuple() | integer() | binary()
+  @type amount :: integer() | String.t()
+  @type unit :: atom() | String.t()
+  @type parse_type ::
+          %{amount: amount(), unit: unit()}
+          | {amount(), unit()}
+          | amount()
 
   @units [:millisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
 
@@ -114,7 +120,7 @@ defmodule Periods do
       iex> Periods.new(100)
       {:ok, %Periods.Period{amount: 100, unit: :second}}
   """
-  @spec new(parse_type()) :: {:ok, Period.t()} | {:error, atom()}
+  @spec new(parse_type()) :: {:ok, Period.t()} | {:error, Keyword.t()}
   defdelegate new(value), to: Parser
 
   @doc """

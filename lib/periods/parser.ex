@@ -11,7 +11,7 @@ defmodule Periods.Parser do
 
   def new(%{amount: amount, unit: unit}) when is_binary(amount) and unit in @units do
     case parse_amount(amount) do
-      {:ok, integer} -> new(%{amount: integer, unit: unit})
+      {:ok, integer} -> new({integer, unit})
       {:error, message} -> {:error, message}
     end
   end
@@ -24,11 +24,11 @@ defmodule Periods.Parser do
   end
 
   def new(%{amount: _, unit: unit}) when unit in @units do
-    {:error, :amount_must_be_an_integer}
+    {:error, [amount: "must be an integer"]}
   end
 
   def new(%{amount: _, unit: unit}) when unit not in @units do
-    {:error, :bad_unit_type}
+    {:error, [unit: "bad type"]}
   end
 
   def new({amount, unit}) when is_integer(amount) and unit in @units do
@@ -50,11 +50,11 @@ defmodule Periods.Parser do
   end
 
   def new({_amount, unit}) when unit in @units do
-    {:error, :amount_must_be_an_integer}
+    {:error, [amount: "must be an integer"]}
   end
 
   def new({_amount, unit}) when unit not in @units do
-    {:error, :bad_unit_type}
+    {:error, [unit: "bad type"]}
   end
 
   def new(amount) when is_integer(amount) do
@@ -68,23 +68,23 @@ defmodule Periods.Parser do
     end
   end
 
-  def new(_amount), do: {:error, :amount_must_be_an_integer}
+  def new(_amount), do: {:error, [amount: "must be an integer"]}
 
-  @spec new(binary()) :: {:ok, atom()} | {:error, atom()}
+  @spec parse_unit(binary()) :: {:ok, atom()} | {:error, Keyword.t()}
   def parse_unit(unit) when is_binary(unit) do
     case String.to_existing_atom(unit) do
       parsed_unit when parsed_unit in @units -> {:ok, parsed_unit}
-      _ -> {:error, :bad_unit_type}
+      _ -> {:error, [unit: "bad type"]}
     end
   end
 
-  def parse_unit(_unit), do: {:error, :bad_unit_type}
+  def parse_unit(_unit), do: {:error, [unit: "bad type"]}
 
   defp parse_amount(amount) do
     case Integer.parse(amount) do
       {integer, ""} -> {:ok, integer}
-      {_integer, remainder} when remainder != "" -> {:error, :amount_must_be_an_integer}
-      _ -> {:error, :cannot_parse_amount}
+      {_integer, remainder} when remainder != "" -> {:error, [amount: "must be an integer"]}
+      _ -> {:error, [amount: "cannot parse amount"]}
     end
   end
 end
