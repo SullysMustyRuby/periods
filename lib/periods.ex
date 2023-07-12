@@ -16,6 +16,7 @@ defmodule Periods do
 
   alias Periods.Computation
   alias Periods.Conversion
+  alias Periods.Formatter
   alias Periods.Parser
   alias Periods.Period
 
@@ -62,6 +63,17 @@ defmodule Periods do
   """
   @spec add(computation(), Period.t()) :: computation() | {:error, atom()}
   defdelegate add(value_1, value_2), to: Computation
+
+  @doc """
+  Returns a list of all the current values Periods supports
+
+  ## Examples
+
+      iex> Periods.all_units()
+      [:millisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
+  """
+  @spec all_units() :: list(atom())
+  def all_units, do: @units
 
   @doc """
   Convert a Period from one unit to another unit.
@@ -159,14 +171,7 @@ defmodule Periods do
   @spec subtract(computation(), Period.t()) :: computation() | {:error, atom()}
   defdelegate subtract(value_1, value_2), to: Computation
 
-  @doc """
-  Returns a list of all the current values Periods supports
+  defdelegate to_integer(period, convert_unit), to: Formatter
 
-  ## Examples
-
-      iex> Periods.all_units()
-      [:millisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
-  """
-  @spec all_units() :: list(atom())
-  def all_units, do: @units
+  defdelegate to_string(period, convert_unit), to: Formatter
 end
