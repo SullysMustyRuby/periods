@@ -103,7 +103,7 @@ defmodule Periods do
       %Periods.Period{amount: 0, unit: :week}
 
       iex> Periods.convert(%Period{amount: 1000, unit: :second}, :month)
-      {:error, [unit: "cannot convert second to month"]}
+      {:error, {:cannot_convert_to_month, :month}}
   """
   @spec convert(Period.t(), atom() | String.t()) :: Period.t() | error_type()
   defdelegate convert(period, unit), to: Conversion
@@ -161,7 +161,6 @@ defmodule Periods do
 
       iex> Periods.diff(#DateTime<2023-05-21 18:23:45.023+09:00 JST Asia/Tokyo>, #DateTime<2023-04-13 13:50:07.003+07:00 +07 Asia/Bangkok>)
       {:ok, %Periods.Period{amount: 3292418, unit: :second}}
-
 
   """
   @spec diff(difference_type(), difference_type(), unit()) :: {:ok, Period.t()} | error_type()
@@ -298,7 +297,7 @@ defmodule Periods do
       10
 
       iex> Periods.to_integer(%Period{amount: 1000, unit: :second}, :month)
-      {:error, [unit: "cannot convert second to month"]}
+      {:error, {:cannot_convert_to_month, :second}}
   """
   @spec to_integer(Period.t(), unit() | nil) :: integer() | error_type()
   defdelegate to_integer(period, convert_unit \\ nil), to: Formatter
@@ -318,7 +317,7 @@ defmodule Periods do
       "1 day"
 
       iex> Periods.to_string(%Period{amount: 1000, unit: :second}, :month)
-      {:error, [unit: "cannot convert second to month"]}
+      {:error, {:cannot_convert_to_month, :second}}
   """
   @spec to_string(Period.t(), unit() | nil) :: String.t() | error_type()
   defdelegate to_string(period, convert_unit \\ nil), to: Formatter
