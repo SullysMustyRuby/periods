@@ -6,6 +6,21 @@ defmodule Periods.Conversion do
 
   @units Periods.all_units()
 
+  defmodule ConversionError do
+    defexception message: "conversion invalid"
+
+    def exception(message) do
+      %ConversionError{message: message}
+    end
+  end
+
+  def convert!(period, unit) do
+    case convert(period, unit) do
+      %Period{} = converted_period -> converted_period
+      {:error, message} -> raise ConversionError.exception(message)
+    end
+  end
+
   def convert(%Period{unit: unit} = period, unit) when unit in @units, do: period
 
   def convert(%Period{unit: :millisecond} = period, :second) do
@@ -308,7 +323,7 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :year}
   end
 
-  def convert(%Period{}, :month), do: {:error, :cannot_convert_to_month}
+  def convert(%Period{unit: unit}, :month), do: {:error, [unit: "cannot convert #{unit} to month"]}
 
   def convert(%Period{} = period, unit) do
     case Parser.parse_unit(unit) do
@@ -317,5 +332,5 @@ defmodule Periods.Conversion do
     end
   end
 
-  def convert(_period, _unit), do: {:error, :invalid_arguments}
+  def convert(_period, _unit), do: {:error, [arguments: "invalid arguments please try again"]}
 end
