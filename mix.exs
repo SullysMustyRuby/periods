@@ -6,7 +6,7 @@ defmodule Periods.MixProject do
   @github "https://github.com/SullysMustyRuby/periods"
   @license "MIT"
   @name "Periods"
-  @version "0.0.2"
+  @version "0.1.0"
 
   def project do
     [
@@ -49,7 +49,8 @@ defmodule Periods.MixProject do
     [
       {:decimal, "~> 2.1"},
       {:ecto, "~> 1.0 or ~> 2.0 or ~> 2.1 or ~> 3.0", optional: true},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:tz, "~> 0.26.2"}
     ]
   end
 

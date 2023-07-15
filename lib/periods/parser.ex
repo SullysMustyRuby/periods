@@ -9,13 +9,6 @@ defmodule Periods.Parser do
     use Periods.Errors
   end
 
-  def new!(params) do
-    case new(params) do
-      {:ok, period} -> period
-      {:error, message} -> raise ParserError.exception(message)
-    end
-  end
-
   def new(%{amount: amount, unit: unit}) when is_integer(amount) and unit in @units do
     {:ok, %Period{amount: amount, unit: unit}}
   end
@@ -80,6 +73,15 @@ defmodule Periods.Parser do
   end
 
   def new(_amount), do: {:error, :amount_must_be_integer}
+
+  def new!(params) do
+    case new(params) do
+      {:ok, period} -> period
+      {:error, message} -> raise ParserError.exception(message)
+    end
+  end
+
+  def new(amount, unit), do: new({amount, unit})
 
   @spec parse_unit(binary()) :: {:ok, atom()} | {:error, atom()}
   def parse_unit(unit) when is_binary(unit) do

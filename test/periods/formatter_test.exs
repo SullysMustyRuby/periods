@@ -11,7 +11,7 @@ defmodule Periods.FormatterTest do
 
     test "when given a period with a conversion outputs an integer in converted unit" do
       {:ok, period} = Periods.new({1000, :hour})
-      assert Periods.to_integer(period, :second) == 3600000
+      assert Periods.to_integer(period, :second) == 3_600_000
     end
 
     test "when given a period with a conversion with an invalid unit returns error" do

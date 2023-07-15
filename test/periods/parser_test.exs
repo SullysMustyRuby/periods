@@ -81,7 +81,6 @@ defmodule Periods.ParserTest do
   end
 
   describe "new!/1" do
-
     test "with an integer amount and proper unit returns a struct" do
       assert %Period{amount: 100, unit: :day} == Periods.new!({100, :day})
     end

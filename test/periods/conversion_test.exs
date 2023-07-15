@@ -488,7 +488,9 @@ defmodule Periods.ConversionTest do
 
     test "month: returns error for milliseconds" do
       {:ok, period} = Periods.new({10 * 24 * 60 * 60 * 1000, :millisecond})
-      assert {:error, {:cannot_convert_to_month, :millisecond}} = Conversion.convert(period, :month)
+
+      assert {:error, {:cannot_convert_to_month, :millisecond}} =
+               Conversion.convert(period, :month)
     end
 
     test "month: returns error for seconds" do
@@ -671,6 +673,7 @@ defmodule Periods.ConversionTest do
     test "when the new unit is invalid returns error" do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
         {:ok, period} = Periods.new({100, :day})
+
         assert_raise ConversionError, "invalid unit type", fn ->
           Conversion.convert!(period, bad_unit)
         end
