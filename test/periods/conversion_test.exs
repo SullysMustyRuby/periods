@@ -18,13 +18,13 @@ defmodule Periods.ConversionTest do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
         {:ok, period} = Periods.new({100, :day})
         {:error, message} = Conversion.convert(period, bad_unit)
-        assert message == :bad_unit_type
+        assert message == [unit: "bad type"]
       end
     end
 
     test "with invalid arguments returns error tuple" do
       for bad_period <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
-        assert {:error, :invalid_arguments} == Conversion.convert(bad_period, :second)
+        assert {:error, [arguments: "invalid arguments please try again"]} == Conversion.convert(bad_period, :second)
       end
     end
 
@@ -486,22 +486,22 @@ defmodule Periods.ConversionTest do
 
     test "month: returns error for milliseconds" do
       {:ok, period} = Periods.new({10 * 24 * 60 * 60 * 1000, :millisecond})
-      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+      assert {:error, [unit: "cannot convert millisecond to month"]} = Conversion.convert(period, :month)
     end
 
     test "month: returns error for seconds" do
       {:ok, period} = Periods.new({100 * 24 * 60 * 60, :second})
-      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+      assert {:error, [unit: "cannot convert second to month"]} = Conversion.convert(period, :month)
     end
 
     test "month: returns error for minute" do
       {:ok, period} = Periods.new({100 * 60 * 60, :minute})
-      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+      assert {:error, [unit: "cannot convert minute to month"]} = Conversion.convert(period, :month)
     end
 
     test "month: returns error for hour" do
       {:ok, period} = Periods.new({100 * 60, :hour})
-      assert {:error, :cannot_convert_to_month} = Conversion.convert(period, :month)
+      assert {:error, [unit: "cannot convert hour to month"]} = Conversion.convert(period, :month)
     end
 
     test "month: converts to year" do

@@ -16,6 +16,7 @@ defmodule Periods do
 
   alias Periods.Computation
   alias Periods.Conversion
+  alias Periods.Conversion.ConversionError
   alias Periods.Formatter
   alias Periods.Parser
   alias Periods.Period
@@ -61,7 +62,7 @@ defmodule Periods do
       iex> Periods.add(today, %Period{amount: 1, unit: :millisecond})
       ~D[2023-07-09]
   """
-  @spec add(computation(), Period.t()) :: computation() | {:error, atom()}
+  @spec add(computation(), Period.t()) :: computation() | {:error, Keyword.t()}
   defdelegate add(value_1, value_2), to: Computation
 
   @doc """
@@ -99,10 +100,25 @@ defmodule Periods do
       %Periods.Period{amount: 0, unit: :week}
 
       iex> Periods.convert(%Period{amount: 1000, unit: :second}, :month)
-      {:error, :cannot_convert_to_month}
+      {:error, [unit: "cannot convert second to month"]}
   """
-  @spec convert(Period.t(), atom() | String.t()) :: Period.t() | {:error, atom()}
+  @spec convert(Period.t(), atom() | String.t()) :: Period.t() | {:error, Keyword.t()}
   defdelegate convert(period, unit), to: Conversion
+
+  @doc """
+  Converts and returns a %Period{} or raise error.
+
+  Same as `convert/2` excepts raises a `%ConversionError{}` when unsuccessful
+
+    iex> Periods.convert(%Period{amount: 10, unit: :second}, :week)
+    %Periods.Period{amount: 0, unit: :week}
+
+    iex> Periods.convert(%Period{amount: 1000, unit: :second}, :month)
+    %ConversionError{[unit: "cannot convert second to month"]}
+  """
+
+  @spec convert!(Period.t(), atom() | String.t()) :: Period.t() | ConversionError.t()
+  defdelegate convert!(period, unit), to: Conversion
 
   @doc """
   Returns the value set by your Application environment or the default :second
@@ -171,7 +187,11 @@ defmodule Periods do
   @spec subtract(computation(), Period.t()) :: computation() | {:error, atom()}
   defdelegate subtract(value_1, value_2), to: Computation
 
+  defdelegate to_integer(period), to: Formatter
+
   defdelegate to_integer(period, convert_unit), to: Formatter
+
+  defdelegate to_string(period), to: Formatter
 
   defdelegate to_string(period, convert_unit), to: Formatter
 end
