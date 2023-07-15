@@ -7,12 +7,32 @@ defmodule Periods.Computation do
 
   @month_restrictions [:millisecond, :second, :minute, :hour, :week]
 
+  defmodule ComputationError do
+    use Periods.Errors
+
+    def exception({:invalid_month_addition, unit}) do
+      %ComputationError{message: "cannot add #{unit} to month"}
+    end
+
+    def exception({:invalid_time_addition, unit}) do
+      %ComputationError{message: "cannot add #{unit} to Time"}
+    end
+
+    def exception({:invalid_month_subtraction, unit}) do
+      %ComputationError{message: "cannot subtract #{unit} with a month"}
+    end
+
+    def exception({:invalid_time_subtraction, unit}) do
+      %ComputationError{message: "cannot subtract #{unit} with Time"}
+    end
+  end
+
   def add(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
-    {:error, :invalid_month_addition}
+    {:error, {:invalid_month_addition, unit}}
   end
 
   def add(%Period{unit: unit}, %Period{unit: :month}) when unit in @month_restrictions do
-    {:error, :invalid_month_addition}
+    {:error, {:invalid_month_addition, unit}}
   end
 
   def add(%Period{unit: unit} = period_1, %Period{unit: unit} = period_2) do
@@ -26,7 +46,7 @@ defmodule Periods.Computation do
   end
 
   def add(%Time{}, %Period{unit: unit}) when unit in [:day, :week, :month, :year, :decade] do
-    {:error, :invalid_time_addition}
+    {:error, {:invalid_time_addition, unit}}
   end
 
   def add(%Time{} = time, period) do
@@ -37,7 +57,7 @@ defmodule Periods.Computation do
   end
 
   def add(%Date{}, %Period{unit: :month}) do
-    {:error, :invalid_date_addition}
+    {:error, {:invalid_month_addition, Date}}
   end
 
   def add(%Date{} = date, period) do
@@ -48,7 +68,7 @@ defmodule Periods.Computation do
   end
 
   def add(%DateTime{}, %Period{unit: :month}) do
-    {:error, :invalid_month_addition}
+    {:error, {:invalid_month_addition, DateTime}}
   end
 
   def add(%DateTime{} = date_time, %Period{} = period) do
@@ -59,7 +79,7 @@ defmodule Periods.Computation do
   end
 
   def add(%NaiveDateTime{}, %Period{unit: :month}) do
-    {:error, :invalid_month_addition}
+    {:error, {:invalid_month_addition, NaiveDateTime}}
   end
 
   def add(%NaiveDateTime{} = date_time, %Period{unit: unit} = period)
@@ -74,15 +94,15 @@ defmodule Periods.Computation do
   end
 
   def add(%NaiveDateTime{}, %Period{}) do
-    {:error, :invalid_month_addition}
+    {:error, {:invalid_month_addition, NaiveDateTime}}
   end
 
   def subtract(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
-    {:error, :invalid_month_subtraction}
+    {:error, {:invalid_month_subtraction, unit}}
   end
 
   def subtract(%Period{unit: unit}, %Period{unit: :month}) when unit in @month_restrictions do
-    {:error, :invalid_month_subtraction}
+    {:error, {:invalid_month_subtraction, unit}}
   end
 
   def subtract(%Period{unit: unit} = period_1, %Period{unit: unit} = period_2) do
@@ -96,7 +116,7 @@ defmodule Periods.Computation do
   end
 
   def subtract(%Time{}, %Period{unit: unit}) when unit in [:day, :week, :month, :year, :decade] do
-    {:error, :invalid_time_subtraction}
+    {:error, {:invalid_time_subtraction, unit}}
   end
 
   def subtract(%Time{} = time, period) do
@@ -107,7 +127,7 @@ defmodule Periods.Computation do
   end
 
   def subtract(%Date{}, %Period{unit: :month}) do
-    {:error, :invalid_date_addition}
+    {:error, {:invalid_month_subtraction, Date}}
   end
 
   def subtract(%Date{} = date, period) do
@@ -118,7 +138,7 @@ defmodule Periods.Computation do
   end
 
   def subtract(%DateTime{}, %Period{unit: :month}) do
-    {:error, :invalid_month_subtraction}
+    {:error, {:invalid_month_subtraction, DateTime}}
   end
 
   def subtract(%DateTime{} = date_time, %Period{} = period) do
@@ -129,7 +149,7 @@ defmodule Periods.Computation do
   end
 
   def subtract(%NaiveDateTime{}, %Period{unit: :month}) do
-    {:error, :invalid_month_addition}
+    {:error, {:invalid_month_subtraction, NaiveDateTime}}
   end
 
   def subtract(%NaiveDateTime{} = date_time, %Period{unit: unit} = period)
@@ -143,9 +163,9 @@ defmodule Periods.Computation do
     end
   end
 
-  def subtract(%NaiveDateTime{}, %Period{}) do
-    {:error, :invalid_month_addition}
-  end
+  # def subtract(%NaiveDateTime{}, %Period{}) do
+  #   {:error, {:invalid_subtraction, NaiveDateTime}}
+  # end
 
   defp lowest_unit(unit_1, unit_2) do
     index_units = Enum.with_index(Periods.all_units())

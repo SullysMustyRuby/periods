@@ -6,15 +6,7 @@ defmodule Periods.Parser do
   @units Periods.all_units()
 
   defmodule ParserError do
-    defexception [:message]
-
-    def exception(:amount_must_be_integer) do
-      %ParserError{message: "amount must be an integer"}
-    end
-
-    def exception(:invalid_unit_type) do
-      %ParserError{message: "invalid unit type"}
-    end
+    use Periods.Errors
   end
 
   def new!(params) do

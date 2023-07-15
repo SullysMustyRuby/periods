@@ -7,18 +7,10 @@ defmodule Periods.Conversion do
   @units Periods.all_units()
 
   defmodule ConversionError do
-    defexception [:message]
+    use Periods.Errors
 
     def exception({:cannot_convert_to_month, unit}) do
       %ConversionError{message: "cannot convert #{unit} to month"}
-    end
-
-    def exception(:invalid_arguments) do
-      %ConversionError{message: "invalid arguments please try again"}
-    end
-
-    def exception(:invalid_unit_type) do
-      %ConversionError{message: "invalid unit type"}
     end
   end
 

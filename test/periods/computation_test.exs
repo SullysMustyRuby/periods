@@ -23,7 +23,7 @@ defmodule Periods.ComputationTest do
         {:ok, period_1} = Periods.new({100, bad_unit})
         {:ok, period_2} = Periods.new({300, :month})
 
-        assert {:error, :invalid_month_addition} == Computation.add(period_1, period_2)
+        assert {:error, {:invalid_month_addition, bad_unit}} == Computation.add(period_1, period_2)
       end
     end
 
@@ -60,7 +60,7 @@ defmodule Periods.ComputationTest do
 
       for bad_unit <- [:day, :week, :month, :year, :decade] do
         {:ok, period} = Periods.new({10, bad_unit})
-        assert {:error, :invalid_time_addition} == Computation.add(time, period)
+        assert {:error, {:invalid_time_addition, bad_unit}} == Computation.add(time, period)
       end
     end
 
@@ -84,7 +84,7 @@ defmodule Periods.ComputationTest do
       {:ok, time} = Date.new(2000, 1, 1)
 
       {:ok, period} = Periods.new({10, :month})
-      assert {:error, :invalid_date_addition} == Computation.add(time, period)
+      assert {:error, {:invalid_month_addition, Date}} == Computation.add(time, period)
     end
 
     test "DateTime: with a non month value adds the period to a DateTime" do
@@ -104,28 +104,26 @@ defmodule Periods.ComputationTest do
     end
 
     test "NaiveDateTime: with a non month value adds the period to a NaiveDateTime" do
-      {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-03 23:50:07")
+      {:ok, naive_datetime} = NaiveDateTime.from_iso8601("2015-01-03 23:50:07")
       {:ok, period} = Periods.new({10, :day})
 
-      result = Computation.add(datetime, period)
+      result = Computation.add(naive_datetime, period)
       assert result == ~N[2015-01-13 23:50:07]
     end
 
     test "NaiveDateTime: with a negative value subtracts the period from a NaiveDateTime" do
-      {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
+      {:ok, naive_datetime} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
       {:ok, period} = Periods.new({-10, :day})
 
-      result = Computation.add(datetime, period)
+      result = Computation.add(naive_datetime, period)
       assert result == ~N[2015-01-13 23:50:07]
     end
 
-    test "NaiveDateTime: with a month restricted value returns error when trying to add to a NaiveDateTime" do
-      {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
+    test "NaiveDateTime: with a month returns error when trying to add to a NaiveDateTime" do
+      {:ok, naive_datetime} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
 
-      for bad_unit <- [:millisecond, :second, :minute, :hour, :week, :month] do
-        {:ok, period} = Periods.new({10, bad_unit})
-        assert {:error, :invalid_month_addition} == Computation.add(datetime, period)
-      end
+      {:ok, period} = Periods.new({10, :month})
+      assert {:error, {:invalid_month_addition, NaiveDateTime}} == Computation.add(naive_datetime, period)
     end
   end
 
@@ -149,7 +147,7 @@ defmodule Periods.ComputationTest do
         {:ok, period_1} = Periods.new({100, bad_unit})
         {:ok, period_2} = Periods.new({300, :month})
 
-        assert {:error, :invalid_month_subtraction} == Computation.subtract(period_1, period_2)
+        assert {:error, {:invalid_month_subtraction, bad_unit}} == Computation.subtract(period_1, period_2)
       end
     end
 
@@ -186,31 +184,31 @@ defmodule Periods.ComputationTest do
 
       for bad_unit <- [:day, :week, :month, :year, :decade] do
         {:ok, period} = Periods.new({10, bad_unit})
-        assert {:error, :invalid_time_subtraction} == Computation.subtract(time, period)
+        assert {:error, {:invalid_time_subtraction, bad_unit}} == Computation.subtract(time, period)
       end
     end
 
     test "Date: with a valid unit subtracts the period from a Date" do
-      {:ok, time} = Date.new(2000, 1, 1)
+      {:ok, date} = Date.new(2000, 1, 1)
       {:ok, period} = Periods.new({100, :hour})
 
-      result = Computation.subtract(time, period)
+      result = Computation.subtract(date, period)
       assert result == ~D[1999-12-28]
     end
 
     test "Date: with a negative value adds the period from a Date" do
-      {:ok, time} = Date.new(2000, 1, 1)
+      {:ok, date} = Date.new(2000, 1, 1)
       {:ok, period} = Periods.new({-100, :hour})
 
-      result = Computation.subtract(time, period)
+      result = Computation.subtract(date, period)
       assert result == ~D[2000-01-05]
     end
 
     test "Date: a month returns error when trying to subtract from a Date" do
-      {:ok, time} = Date.new(2000, 1, 1)
+      {:ok, date} = Date.new(2000, 1, 1)
 
       {:ok, period} = Periods.new({10, :month})
-      assert {:error, :invalid_date_addition} == Computation.subtract(time, period)
+      assert {:error, {:invalid_month_subtraction, Date}} == Computation.subtract(date, period)
     end
 
     test "DateTime: with a non month value subtracts the period to a DateTime" do
@@ -230,28 +228,26 @@ defmodule Periods.ComputationTest do
     end
 
     test "NaiveDateTime: with a non month value subtracts the period from a NaiveDateTime" do
-      {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-13 23:50:07")
+      {:ok, naive_datetime} = NaiveDateTime.from_iso8601("2015-01-13 23:50:07")
       {:ok, period} = Periods.new({10, :day})
 
-      result = Computation.subtract(datetime, period)
+      result = Computation.subtract(naive_datetime, period)
       assert result == ~N[2015-01-03 23:50:07]
     end
 
     test "NaiveDateTime: with a negative value adds the period to a NaiveDateTime" do
-      {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-03 23:50:07")
+      {:ok, naive_datetime} = NaiveDateTime.from_iso8601("2015-01-03 23:50:07")
       {:ok, period} = Periods.new({-10, :day})
 
-      result = Computation.subtract(datetime, period)
+      result = Computation.subtract(naive_datetime, period)
       assert result == ~N[2015-01-13 23:50:07]
     end
 
-    test "NaiveDateTime: with a month restricted value returns error when trying to subtract from a NaiveDateTime" do
-      {:ok, datetime} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
+    test "NaiveDateTime: with a month returns error when trying to subtract from a NaiveDateTime" do
+      {:ok, naive_datetime} = NaiveDateTime.from_iso8601("2015-01-23 23:50:07")
 
-      for bad_unit <- [:millisecond, :second, :minute, :hour, :week, :month] do
-        {:ok, period} = Periods.new({10, bad_unit})
-        assert {:error, :invalid_month_addition} == Computation.subtract(datetime, period)
-      end
+      {:ok, period} = Periods.new({10, :month})
+      assert {:error, {:invalid_month_subtraction, NaiveDateTime}} == Computation.subtract(naive_datetime, period)
     end
   end
 end
