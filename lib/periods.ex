@@ -214,37 +214,15 @@ defmodule Periods do
   defdelegate new!(value), to: Parser
 
   @doc """
-  Subtract a Period from a Time, Date, DateTime, or NaiveDateTime.
-
-  Note: `Months` have limited subtracting properties
-
-  When performing subtraction of periods all values will be converted to the lowest
-  unit value. For example if you subtract a Period of days from a Period of seconds then
-  the result will be seconds.
-
-  When subtracting a period from an Elixir date/time struct the return will be the Elixir
-  date/time struct.
-
-  Note: Since there is conversion involved you may loose fractional values such as
-  subtracting 1 millisecond from a Date.
+  Creates a new Period.
 
   ## Examples
 
-      iex> Periods.subtract(%Period{amount: 10, unit: :day}, %Period{amount: 1000, unit: :second})
-      %Periods.Period{amount: 863000, unit: :second}
+      iex> Periods.new(100, :second)
+      {:ok, %Periods.Period{amount: 100, unit: :second}}
 
-      iex> DateTime.utc_now() |> Periods.subtract(%Period{amount: 1000, unit: :second})
-      ~U[2023-07-09 14:08:32.916532Z]
-
-      iex> Time.utc_now() |> Periods.subtract(%Period{amount: 1000, unit: :second})
-      ~T[14:08:45.831176]
-
-      iex> today = Date.utc_today()
-      ~D[2023-07-10]
-      iex> Periods.subtract(today, %Period{amount: 10000000000000, unit: :millisecond})
-      ~D[1706-08-21]
-      iex> Periods.subtract(today, %Period{amount: 3, unit: :year})
-      ~D[2020-07-10]
+      iex> Periods.new("100", "second")
+      {:ok, %Periods.Period{amount: 100, unit: :second}}
   """
   @spec new(amount(), unit()) :: {:ok, Period.t()} | error_type()
   defdelegate new(amount, unit), to: Parser
