@@ -2,6 +2,8 @@ defmodule Periods.ConversionTest do
   use ExUnit.Case
 
   alias Periods.Conversion
+  alias Periods.Conversion.ConversionError
+  alias Periods.Period
 
   describe "convert/2" do
     test "a period with same unit returns the period" do
@@ -646,6 +648,41 @@ defmodule Periods.ConversionTest do
       period = Conversion.convert(period, :year)
       assert period.amount == 2 * 10
       assert period.unit == :year
+    end
+  end
+
+  describe "convert!/2" do
+    test "with a valid unit returns a Period with new unit" do
+      {:ok, period} = Periods.new({100, :day})
+      converted = Conversion.convert!(period, :hour)
+      assert converted == %Period{amount: 2400, unit: :hour}
+    end
+
+    test "a period with same unit returns the period" do
+      {:ok, period} = Periods.new({100, :day})
+      assert period == Conversion.convert!(period, :day)
+    end
+
+    test "when the new unit is binary parses and converts" do
+      {:ok, period} = Periods.new({100, "day"})
+      assert period == Conversion.convert!(period, :day)
+    end
+
+    test "when the new unit is invalid returns error" do
+      for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
+        {:ok, period} = Periods.new({100, :day})
+        assert_raise ConversionError, "unit: bad type", fn ->
+          Conversion.convert!(period, bad_unit)
+        end
+      end
+    end
+
+    test "with invalid arguments returns error" do
+      for bad_period <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
+        assert_raise ConversionError, "invalid arguments please try again", fn ->
+          Conversion.convert!(bad_period, :second)
+        end
+      end
     end
   end
 end

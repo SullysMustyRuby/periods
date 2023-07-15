@@ -1,6 +1,7 @@
 defmodule Periods.Formatter do
-  import Kernel, except: [to_string: 1]
   @moduledoc false
+
+  import Kernel, except: [to_string: 1]
 
   alias Periods.Period
 

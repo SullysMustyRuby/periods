@@ -7,10 +7,14 @@ defmodule Periods.Conversion do
   @units Periods.all_units()
 
   defmodule ConversionError do
-    defexception message: "conversion invalid"
+    defexception [:message]
 
-    def exception(message) do
-      %ConversionError{message: message}
+    def exception([unit: error_message]) do
+      %ConversionError{message: "unit: #{error_message}"}
+    end
+
+    def exception([arguments: error_message]) do
+      %ConversionError{message: error_message}
     end
   end
 

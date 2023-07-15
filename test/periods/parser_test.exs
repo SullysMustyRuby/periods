@@ -3,6 +3,7 @@ defmodule Periods.ParserTest do
   # doctest Periods
 
   alias Periods.Period
+  alias Periods.Parser.ParserError
 
   describe "new/1" do
     test "map: with an integer amount and proper unit returns a struct" do
@@ -75,6 +76,33 @@ defmodule Periods.ParserTest do
       for bad_amount <- [1.23, "1.23", %{}, [], {}] do
         {:error, message} = Periods.new(bad_amount)
         assert message == [amount: "must be an integer"]
+      end
+    end
+  end
+
+  describe "new!/1" do
+
+    test "with an integer amount and proper unit returns a struct" do
+      assert %Period{amount: 100, unit: :day} == Periods.new!({100, :day})
+    end
+
+    test "with an binary amount and proper unit returns a struct" do
+      assert %Period{amount: 100, unit: :day} == Periods.new!({"100", :day})
+    end
+
+    test "with an invalid amount returns error" do
+      for bad_amount <- [1.23, "1.23", %{}, [], {}] do
+        assert_raise ParserError, "amount: must be an integer", fn ->
+          Periods.new!({bad_amount, :day})
+        end
+      end
+    end
+
+    test "with invalid unit returns error" do
+      for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
+        assert_raise ParserError, "unit: bad type", fn ->
+          Periods.new!({100, bad_unit})
+        end
       end
     end
   end

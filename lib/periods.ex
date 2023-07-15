@@ -18,8 +18,9 @@ defmodule Periods do
   alias Periods.Conversion
   alias Periods.Conversion.ConversionError
   alias Periods.Formatter
-  alias Periods.Parser
   alias Periods.Period
+  alias Periods.Parser
+  alias Periods.Parser.ParserError
 
   @type computation :: Period.t() | Time.t() | Date.t() | DateTime.t() | NaiveDateTime.t()
   @type amount :: integer() | String.t()
@@ -110,14 +111,15 @@ defmodule Periods do
 
   Same as `convert/2` excepts raises a `%ConversionError{}` when unsuccessful
 
-    iex> Periods.convert(%Period{amount: 10, unit: :second}, :week)
-    %Periods.Period{amount: 0, unit: :week}
+  ## Examples
 
-    iex> Periods.convert(%Period{amount: 1000, unit: :second}, :month)
-    %ConversionError{[unit: "cannot convert second to month"]}
+    iex> Periods.convert!(%Period{amount: 10, unit: :day}, :second)
+    %Periods.Period{amount: 864000, unit: :second}
+
+    iex> Periods.convert!(%Period{amount: 1000, unit: :second}, :month)
+    ** (Periods.Conversion.ConversionError) unit: bad type
   """
-
-  @spec convert!(Period.t(), atom() | String.t()) :: Period.t() | ConversionError.t()
+  @spec convert!(Period.t(), atom() | String.t()) :: Period.t() | ConversionError
   defdelegate convert!(period, unit), to: Conversion
 
   @doc """
@@ -150,6 +152,22 @@ defmodule Periods do
   """
   @spec new(parse_type()) :: {:ok, Period.t()} | {:error, Keyword.t()}
   defdelegate new(value), to: Parser
+
+  @doc """
+  Creates a new Period or raises an error.
+
+  Same as `new/1` excepts raises a `%ParserError{}` when unsuccessful
+
+  ## Examples
+
+      iex> Periods.new!({100, "second"})
+      %Periods.Period{amount: 100, unit: :second}
+
+      iex> Periods.new!(100, :fort_nights)
+      ** (Periods.Conversion.ConversionError) unit: bad type
+  """
+  @spec new!(parse_type()) :: Period.t() | ParserError
+  defdelegate new!(value), to: Parser
 
   @doc """
   Subtract a Period from a Time, Date, DateTime, or NaiveDateTime.
@@ -187,11 +205,40 @@ defmodule Periods do
   @spec subtract(computation(), Period.t()) :: computation() | {:error, atom()}
   defdelegate subtract(value_1, value_2), to: Computation
 
-  defdelegate to_integer(period), to: Formatter
+  @doc """
+  Output a Period as an Integer with optional conversion unit.
 
-  defdelegate to_integer(period, convert_unit), to: Formatter
+  ## Examples
 
-  defdelegate to_string(period), to: Formatter
+      iex> Periods.to_integer(%Period{amount: 10, unit: :day}, :second)
+      864000
 
-  defdelegate to_string(period, convert_unit), to: Formatter
+      iex> Periods.to_integer(%Period{amount: 10, unit: :day})
+      10
+
+      iex> Periods.to_integer(%Period{amount: 1000, unit: :second}, :month)
+      {:error, [unit: "cannot convert second to month"]}
+  """
+  @spec to_integer(Period.t(), unit() | nil) :: integer() | {:error, Keyword.t()}
+  defdelegate to_integer(period, convert_unit \\ nil), to: Formatter
+
+  @doc """
+  Output a Period as a String with optional conversion unit.
+
+  ## Examples
+
+      iex> Periods.to_string(%Period{amount: 10, unit: :day}, :second)
+      "864000 seconds"
+
+      iex> Periods.to_string(%Period{amount: 10, unit: :day})
+      "10 days"
+
+      iex> Periods.to_string(%Period{amount: 1, unit: :day})
+      "1 day"
+
+      iex> Periods.to_string(%Period{amount: 1000, unit: :second}, :month)
+      {:error, [unit: "cannot convert second to month"]}
+  """
+  @spec to_string(Period.t(), unit() | nil) :: String.t() | {:error, Keyword.t()}
+  defdelegate to_string(period, convert_unit \\ nil), to: Formatter
 end

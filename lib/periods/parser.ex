@@ -5,6 +5,26 @@ defmodule Periods.Parser do
 
   @units Periods.all_units()
 
+  defmodule ParserError do
+    defexception [:message]
+
+    @spec exception(Keyword.t()) :: %ParserError{}
+    def exception([amount: error_message]) do
+      %ParserError{message: "amount: #{error_message}"}
+    end
+
+    def exception([unit: error_message]) do
+      %ParserError{message: "unit: #{error_message}"}
+    end
+  end
+
+  def new!(params) do
+    case new(params) do
+      {:ok, period} -> period
+      {:error, message} -> raise ParserError.exception(message)
+    end
+  end
+
   def new(%{amount: amount, unit: unit}) when is_integer(amount) and unit in @units do
     {:ok, %Period{amount: amount, unit: unit}}
   end
