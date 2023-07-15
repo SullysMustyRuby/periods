@@ -23,7 +23,7 @@ defmodule Periods.Ecto.MapTypeTest do
     end
 
     test "with an invalid value returns error" do
-      assert MapType.cast(1.23) == {:error, [amount: "must be an integer"]}
+      assert MapType.cast(1.23) == {:error, :amount_must_be_integer}
     end
   end
 

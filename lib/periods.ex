@@ -63,7 +63,7 @@ defmodule Periods do
       iex> Periods.add(today, %Period{amount: 1, unit: :millisecond})
       ~D[2023-07-09]
   """
-  @spec add(computation(), Period.t()) :: computation() | {:error, Keyword.t()}
+  @spec add(computation(), Period.t()) :: computation() | {:error, atom()}
   defdelegate add(value_1, value_2), to: Computation
 
   @doc """
@@ -103,7 +103,7 @@ defmodule Periods do
       iex> Periods.convert(%Period{amount: 1000, unit: :second}, :month)
       {:error, [unit: "cannot convert second to month"]}
   """
-  @spec convert(Period.t(), atom() | String.t()) :: Period.t() | {:error, Keyword.t()}
+  @spec convert(Period.t(), atom() | String.t()) :: Period.t() | {:error, atom()}
   defdelegate convert(period, unit), to: Conversion
 
   @doc """
@@ -150,7 +150,7 @@ defmodule Periods do
       iex> Periods.new(100)
       {:ok, %Periods.Period{amount: 100, unit: :second}}
   """
-  @spec new(parse_type()) :: {:ok, Period.t()} | {:error, Keyword.t()}
+  @spec new(parse_type()) :: {:ok, Period.t()} | {:error, atom()}
   defdelegate new(value), to: Parser
 
   @doc """
@@ -219,7 +219,7 @@ defmodule Periods do
       iex> Periods.to_integer(%Period{amount: 1000, unit: :second}, :month)
       {:error, [unit: "cannot convert second to month"]}
   """
-  @spec to_integer(Period.t(), unit() | nil) :: integer() | {:error, Keyword.t()}
+  @spec to_integer(Period.t(), unit() | nil) :: integer() | {:error, atom()}
   defdelegate to_integer(period, convert_unit \\ nil), to: Formatter
 
   @doc """
@@ -239,6 +239,6 @@ defmodule Periods do
       iex> Periods.to_string(%Period{amount: 1000, unit: :second}, :month)
       {:error, [unit: "cannot convert second to month"]}
   """
-  @spec to_string(Period.t(), unit() | nil) :: String.t() | {:error, Keyword.t()}
+  @spec to_string(Period.t(), unit() | nil) :: String.t() | {:error, atom()}
   defdelegate to_string(period, convert_unit \\ nil), to: Formatter
 end

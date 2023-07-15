@@ -17,7 +17,7 @@ defmodule Periods.ParserTest do
     test "map: with an invalid amount returns error" do
       for bad_amount <- [1.23, "1.23", %{}, [], {}] do
         {:error, message} = Periods.new(%{amount: bad_amount, unit: :second})
-        assert message == [amount: "must be an integer"]
+        assert message == :amount_must_be_integer
       end
     end
 
@@ -28,7 +28,7 @@ defmodule Periods.ParserTest do
     test "map: with invalid unit returns error" do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
         {:error, message} = Periods.new(%{amount: 1, unit: bad_unit})
-        assert message == [unit: "bad type"]
+        assert message == :invalid_unit_type
       end
     end
 
@@ -43,7 +43,7 @@ defmodule Periods.ParserTest do
     test "tuple: with an invalid amount returns error" do
       for bad_amount <- [1.23, "1.23", %{}, [], {}] do
         {:error, message} = Periods.new({bad_amount, :day})
-        assert message == [amount: "must be an integer"]
+        assert message == :amount_must_be_integer
       end
     end
 
@@ -54,7 +54,7 @@ defmodule Periods.ParserTest do
     test "tuple: with invalid unit returns error" do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
         {:error, message} = Periods.new({1, bad_unit})
-        assert message == [unit: "bad type"]
+        assert message == :invalid_unit_type
       end
     end
 
@@ -75,7 +75,7 @@ defmodule Periods.ParserTest do
     test "amount: with invalid amount returns error" do
       for bad_amount <- [1.23, "1.23", %{}, [], {}] do
         {:error, message} = Periods.new(bad_amount)
-        assert message == [amount: "must be an integer"]
+        assert message == :amount_must_be_integer
       end
     end
   end
@@ -92,7 +92,7 @@ defmodule Periods.ParserTest do
 
     test "with an invalid amount returns error" do
       for bad_amount <- [1.23, "1.23", %{}, [], {}] do
-        assert_raise ParserError, "amount: must be an integer", fn ->
+        assert_raise ParserError, "amount must be an integer", fn ->
           Periods.new!({bad_amount, :day})
         end
       end
@@ -100,7 +100,7 @@ defmodule Periods.ParserTest do
 
     test "with invalid unit returns error" do
       for bad_unit <- [2, 1.23, "decimal", :decimal, %{}, [], {}] do
-        assert_raise ParserError, "unit: bad type", fn ->
+        assert_raise ParserError, "invalid unit type", fn ->
           Periods.new!({100, bad_unit})
         end
       end

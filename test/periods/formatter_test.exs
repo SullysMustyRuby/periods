@@ -16,7 +16,7 @@ defmodule Periods.FormatterTest do
 
     test "when given a period with a conversion with an invalid unit returns error" do
       {:ok, period} = Periods.new({1000, :hour})
-      assert Periods.to_integer(period, :month) == {:error, [unit: "cannot convert hour to month"]}
+      assert Periods.to_integer(period, :month) == {:error, {:cannot_convert_to_month, :hour}}
     end
   end
 
@@ -44,7 +44,7 @@ defmodule Periods.FormatterTest do
 
     test "when given a period with a conversion with an invalid unit returns error" do
       {:ok, period} = Periods.new({1000, :hour})
-      assert Periods.to_string(period, :month) == {:error, [unit: "cannot convert hour to month"]}
+      assert Periods.to_string(period, :month) == {:error, {:cannot_convert_to_month, :hour}}
     end
   end
 end

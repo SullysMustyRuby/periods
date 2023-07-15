@@ -9,12 +9,16 @@ defmodule Periods.Conversion do
   defmodule ConversionError do
     defexception [:message]
 
-    def exception([unit: error_message]) do
-      %ConversionError{message: "unit: #{error_message}"}
+    def exception({:cannot_convert_to_month, unit}) do
+      %ConversionError{message: "cannot convert #{unit} to month"}
     end
 
-    def exception([arguments: error_message]) do
-      %ConversionError{message: error_message}
+    def exception(:invalid_arguments) do
+      %ConversionError{message: "invalid arguments please try again"}
+    end
+
+    def exception(:invalid_unit_type) do
+      %ConversionError{message: "invalid unit type"}
     end
   end
 
@@ -327,7 +331,7 @@ defmodule Periods.Conversion do
     %Period{amount: new_amount, unit: :year}
   end
 
-  def convert(%Period{unit: unit}, :month), do: {:error, [unit: "cannot convert #{unit} to month"]}
+  def convert(%Period{unit: unit}, :month), do: {:error, {:cannot_convert_to_month, unit}}
 
   def convert(%Period{} = period, unit) do
     case Parser.parse_unit(unit) do
@@ -336,5 +340,5 @@ defmodule Periods.Conversion do
     end
   end
 
-  def convert(_period, _unit), do: {:error, [arguments: "invalid arguments please try again"]}
+  def convert(_period, _unit), do: {:error, :invalid_arguments}
 end

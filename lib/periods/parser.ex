@@ -8,13 +8,12 @@ defmodule Periods.Parser do
   defmodule ParserError do
     defexception [:message]
 
-    @spec exception(Keyword.t()) :: %ParserError{}
-    def exception([amount: error_message]) do
-      %ParserError{message: "amount: #{error_message}"}
+    def exception(:amount_must_be_integer) do
+      %ParserError{message: "amount must be an integer"}
     end
 
-    def exception([unit: error_message]) do
-      %ParserError{message: "unit: #{error_message}"}
+    def exception(:invalid_unit_type) do
+      %ParserError{message: "invalid unit type"}
     end
   end
 
@@ -44,11 +43,11 @@ defmodule Periods.Parser do
   end
 
   def new(%{amount: _, unit: unit}) when unit in @units do
-    {:error, [amount: "must be an integer"]}
+    {:error, :amount_must_be_integer}
   end
 
   def new(%{amount: _, unit: unit}) when unit not in @units do
-    {:error, [unit: "bad type"]}
+    {:error, :invalid_unit_type}
   end
 
   def new({amount, unit}) when is_integer(amount) and unit in @units do
@@ -70,11 +69,11 @@ defmodule Periods.Parser do
   end
 
   def new({_amount, unit}) when unit in @units do
-    {:error, [amount: "must be an integer"]}
+    {:error, :amount_must_be_integer}
   end
 
   def new({_amount, unit}) when unit not in @units do
-    {:error, [unit: "bad type"]}
+    {:error, :invalid_unit_type}
   end
 
   def new(amount) when is_integer(amount) do
@@ -88,23 +87,22 @@ defmodule Periods.Parser do
     end
   end
 
-  def new(_amount), do: {:error, [amount: "must be an integer"]}
+  def new(_amount), do: {:error, :amount_must_be_integer}
 
-  @spec parse_unit(binary()) :: {:ok, atom()} | {:error, Keyword.t()}
+  @spec parse_unit(binary()) :: {:ok, atom()} | {:error, atom()}
   def parse_unit(unit) when is_binary(unit) do
     case String.to_existing_atom(unit) do
       parsed_unit when parsed_unit in @units -> {:ok, parsed_unit}
-      _ -> {:error, [unit: "bad type"]}
+      _ -> {:error, :invalid_unit_type}
     end
   end
 
-  def parse_unit(_unit), do: {:error, [unit: "bad type"]}
+  def parse_unit(_unit), do: {:error, :invalid_unit_type}
 
   defp parse_amount(amount) do
     case Integer.parse(amount) do
       {integer, ""} -> {:ok, integer}
-      {_integer, remainder} when remainder != "" -> {:error, [amount: "must be an integer"]}
-      _ -> {:error, [amount: "cannot parse amount"]}
+      _ -> {:error, :amount_must_be_integer}
     end
   end
 end
