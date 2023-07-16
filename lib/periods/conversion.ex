@@ -100,7 +100,7 @@ defmodule Periods.Conversion do
 
   def convert(%Period{unit: :minute} = period, :second) do
     new_amount = period.amount * 60
-    %Period{amount: new_amount, unit: :minute}
+    %Period{amount: new_amount, unit: :second}
   end
 
   def convert(%Period{unit: :minute} = period, :hour) do
@@ -220,7 +220,7 @@ defmodule Periods.Conversion do
 
   def convert(%Period{unit: :week} = period, :day) do
     new_amount = period.amount * 7
-    %Period{amount: new_amount, unit: :week}
+    %Period{amount: new_amount, unit: :day}
   end
 
   def convert(%Period{unit: :week} = period, :year) do

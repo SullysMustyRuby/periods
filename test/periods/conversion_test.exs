@@ -217,7 +217,7 @@ defmodule Periods.ConversionTest do
       {:ok, period} = Periods.new({15, :minute})
       period = Conversion.convert(period, :second)
       assert period.amount == 15 * 60
-      assert period.unit == :minute
+      assert period.unit == :second
     end
 
     test "minute: converts to hour" do
@@ -457,7 +457,7 @@ defmodule Periods.ConversionTest do
       {:ok, period} = Periods.new({2, :week})
       period = Conversion.convert(period, :day)
       assert period.amount == 2 * 7
-      assert period.unit == :week
+      assert period.unit == :day
     end
 
     test "week: converts to year" do
