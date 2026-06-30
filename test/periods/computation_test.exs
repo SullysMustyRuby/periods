@@ -8,6 +8,23 @@ defmodule Periods.ComputationTest do
     Calendar.put_time_zone_database(Tz.TimeZoneDatabase)
   end
 
+  describe "abs/1" do
+    test "returns the absolute value of a negative amount" do
+      {:ok, period} = Periods.new({-10, :day})
+      assert %Period{amount: 10, unit: :day} == Computation.abs(period)
+    end
+
+    test "leaves a positive amount unchanged" do
+      {:ok, period} = Periods.new({10, :day})
+      assert %Period{amount: 10, unit: :day} == Computation.abs(period)
+    end
+
+    test "leaves zero unchanged" do
+      {:ok, period} = Periods.new({0, :second})
+      assert %Period{amount: 0, unit: :second} == Computation.abs(period)
+    end
+  end
+
   describe "add/2" do
     test "Periods: with the same unit returns the total" do
       {:ok, period_1} = Periods.new(100)
@@ -390,6 +407,35 @@ defmodule Periods.ComputationTest do
 
       assert Computation.diff(naive_datetime_1, naive_datetime_2, :bad_unit) ==
                {:error, :invalid_unit_type}
+    end
+  end
+
+  describe "multiply/2" do
+    test "scales the amount by a positive scalar and keeps the unit" do
+      {:ok, period} = Periods.new({10, :day})
+      assert %Period{amount: 30, unit: :day} == Computation.multiply(period, 3)
+    end
+
+    test "scales by a negative scalar" do
+      {:ok, period} = Periods.new({10, :day})
+      assert %Period{amount: -20, unit: :day} == Computation.multiply(period, -2)
+    end
+
+    test "scaling by zero returns a zero amount" do
+      {:ok, period} = Periods.new({10, :day})
+      assert %Period{amount: 0, unit: :day} == Computation.multiply(period, 0)
+    end
+  end
+
+  describe "negate/1" do
+    test "flips a positive amount to negative" do
+      {:ok, period} = Periods.new({10, :day})
+      assert %Period{amount: -10, unit: :day} == Computation.negate(period)
+    end
+
+    test "flips a negative amount to positive" do
+      {:ok, period} = Periods.new({-5, :second})
+      assert %Period{amount: 5, unit: :second} == Computation.negate(period)
     end
   end
 

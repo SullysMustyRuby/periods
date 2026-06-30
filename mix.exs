@@ -6,7 +6,7 @@ defmodule Periods.MixProject do
   @github "https://github.com/SullysMustyRuby/periods"
   @license "MIT"
   @name "Periods"
-  @version "0.1.0"
+  @version "0.2.0"
 
   def project do
     [
@@ -25,7 +25,7 @@ defmodule Periods.MixProject do
       docs: [
         main: @name,
         canonical: "https://hexdocs.pm/#{@app}",
-        extras: ["README.md"]
+        extras: ["README.md", "CHANGELOG.md"]
       ],
       aliases: [
         test: "test --no-start"
@@ -47,10 +47,10 @@ defmodule Periods.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:decimal, "~> 2.1"},
-      {:ecto, "~> 1.0 or ~> 2.0 or ~> 2.1 or ~> 3.0", optional: true},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
-      {:tz, "~> 0.26.2"}
+      {:ecto, "~> 3.0", optional: true},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false},
+      {:postgrex, "~> 0.19", only: :test},
+      {:tz, "~> 0.28", only: [:dev, :test]}
     ]
   end
 
@@ -59,8 +59,11 @@ defmodule Periods.MixProject do
       name: @app,
       maintainers: [@author],
       licenses: [@license],
-      files: ~w(mix.exs lib README.md),
-      links: %{"Github" => @github}
+      files: ~w(mix.exs lib README.md CHANGELOG.md),
+      links: %{
+        "Github" => @github,
+        "Changelog" => "#{@github}/blob/main/CHANGELOG.md"
+      }
     ]
   end
 end

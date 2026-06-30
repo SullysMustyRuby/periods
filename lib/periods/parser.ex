@@ -81,6 +81,8 @@ defmodule Periods.Parser do
     end
   end
 
+  def new!(amount, unit), do: new!({amount, unit})
+
   def new(amount, unit), do: new({amount, unit})
 
   @spec parse_unit(binary()) :: {:ok, atom()} | {:error, atom()}

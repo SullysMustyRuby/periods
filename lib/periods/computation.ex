@@ -1,6 +1,7 @@
 defmodule Periods.Computation do
   @moduledoc false
 
+  import Kernel, except: [abs: 1]
   import Periods.Conversion
   import Periods.Parser, only: [parse_unit: 1]
 
@@ -28,6 +29,10 @@ defmodule Periods.Computation do
     def exception({:invalid_time_subtraction, unit}) do
       %ComputationError{message: "cannot subtract #{unit} with Time"}
     end
+  end
+
+  def abs(%Period{} = period) do
+    %Period{amount: Kernel.abs(period.amount), unit: period.unit}
   end
 
   def add(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
@@ -226,12 +231,12 @@ defmodule Periods.Computation do
 
   def diff(_computation_type_1, _computation_type_2, _unit), do: {:error, :invalid_unit_type}
 
-  defp month_diff({year_1, month_1}, {year_2, month_2}) do
-    with {:ok, years} <- Periods.new(year_1 - year_2, :year),
-         {:ok, months} <- Periods.new(month_1 - month_2, :month),
-         %Period{} = period <- Periods.add(years, months) do
-      {:ok, period}
-    end
+  def multiply(%Period{} = period, scalar) when is_integer(scalar) do
+    %Period{amount: period.amount * scalar, unit: period.unit}
+  end
+
+  def negate(%Period{} = period) do
+    %Period{amount: -period.amount, unit: period.unit}
   end
 
   def subtract(%Period{unit: :month}, %Period{unit: unit}) when unit in @month_restrictions do
@@ -302,14 +307,11 @@ defmodule Periods.Computation do
 
   def subtract(%Period{} = period, other), do: subtract(other, period)
 
-  defp lowest_unit(unit_1, unit_2) do
-    index_units = Enum.with_index(Periods.all_units())
-    unit_1_index = Keyword.get(index_units, unit_1)
-    unit_2_index = Keyword.get(index_units, unit_2)
-
-    case unit_1_index < unit_2_index do
-      true -> unit_1
-      false -> unit_2
+  defp month_diff({year_1, month_1}, {year_2, month_2}) do
+    with {:ok, years} <- Periods.new(year_1 - year_2, :year),
+         {:ok, months} <- Periods.new(month_1 - month_2, :month),
+         %Period{} = period <- Periods.add(years, months) do
+      {:ok, period}
     end
   end
 end
