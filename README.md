@@ -10,7 +10,11 @@ in order to help make working with various time based structs easier.
 Periods can be converted, added, and subtracted.
 
 By default the base value is a `second` you can choose a different base for your
-application by setting the `:default_value` in you Application config.
+application by setting the `:default_unit` in your Application config:
+
+```elixir
+config Periods, default_unit: :millisecond
+```
 
 The only limitation are months. Due to the inconsistency of a period of a month from 28-31
 days conversion and mathematical operations are limited.
@@ -58,17 +62,67 @@ Thank you to all the people working on Money and Ecto. Those projects inspired p
   {:ok, %Periods.Period{amount: 3292418, unit: :second}}
 
 ```
-## Ecto Type
-For easy database storage and application use.
+
+## Comparing, scaling, and sorting
 ```elixir
-  # Migration
+  # Compare two Periods of any units, returns :lt | :eq | :gt
+  iex> Periods.compare(%Period{amount: 1, unit: :day}, %Period{amount: 1000, unit: :second})
+  :gt
+
+  # Because compare/2 returns :lt | :eq | :gt it works directly with Enum.sort/2
+  iex> Enum.sort([day, second, hour], Periods)
+  [%Period{amount: 1000, unit: :second}, ...]
+
+  # Scale a Period by an integer
+  iex> Periods.multiply(%Period{amount: 10, unit: :day}, 3)
+  %Periods.Period{amount: 30, unit: :day}
+
+  # Flip the sign, or take the absolute value
+  iex> Periods.negate(%Period{amount: 10, unit: :day})
+  %Periods.Period{amount: -10, unit: :day}
+
+  iex> Periods.abs(%Period{amount: -10, unit: :day})
+  %Periods.Period{amount: 10, unit: :day}
+```
+
+Periods also implement `Inspect` and `String.Chars`:
+```elixir
+  iex> inspect(%Period{amount: 10, unit: :day})
+  "#Periods.Period<10 day>"
+
+  iex> "duration: #{%Period{amount: 1, unit: :day}}"
+  "duration: 1 day"
+```
+
+## Ecto Types
+For easy database storage and application use. Two types are provided:
+
+- `Periods.Ecto.MapType` — stores the Period as JSON (`:map`). Preserves the exact unit
+  and works on any JSON-capable database (MySQL, SQLite, CockroachDB, etc.).
+- `Periods.Ecto.IntervalType` — stores the Period as a native PostgreSQL `interval`, so
+  you can do date math in the database (`now() + duration`, ordering, `EXTRACT`). Because
+  a native interval only has month/day/microsecond buckets, the unit label is normalized
+  on load (e.g. a `:week` loads back as `:day`s). See the module docs for details.
+
+```elixir
+  # Migration (MapType)
   create table(:timers) do
     add :timer_period, :map
   end
 
-  # In Module Schema
+  # In Module Schema (MapType)
   schema "timers" do
     field :timer_period, Periods.Ecto.MapType
+  end
+
+  # Migration (IntervalType, PostgreSQL)
+  create table(:timers) do
+    add :timer_period, :interval
+  end
+
+  # In Module Schema (IntervalType)
+  schema "timers" do
+    field :timer_period, Periods.Ecto.IntervalType
   end
 ```
 
@@ -80,7 +134,7 @@ by adding `periods` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:periods, "~> 0.1.0"}
+    {:periods, "~> 0.2.0"}
   ]
 end
 ```

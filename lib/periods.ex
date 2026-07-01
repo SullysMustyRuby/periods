@@ -14,6 +14,7 @@ defmodule Periods do
   days conversion and mathematical operations are limited.
   """
 
+  alias Periods.Comparison
   alias Periods.Computation
   alias Periods.Conversion
   alias Periods.Conversion.ConversionError
@@ -33,6 +34,17 @@ defmodule Periods do
   @type unit :: atom() | String.t()
 
   @units [:millisecond, :second, :minute, :hour, :day, :week, :month, :year, :decade]
+
+  @doc """
+  Returns a Period with the absolute value of its amount. The unit is unchanged.
+
+  ## Examples
+
+      iex> Periods.abs(%Period{amount: -10, unit: :day})
+      %Periods.Period{amount: 10, unit: :day}
+  """
+  @spec abs(Period.t()) :: Period.t()
+  defdelegate abs(period), to: Computation
 
   @doc """
   Add a Period to a Period, Time, Date, DateTime, or NaiveDateTime.
@@ -78,6 +90,30 @@ defmodule Periods do
   """
   @spec all_units() :: list(atom())
   def all_units, do: @units
+
+  @doc """
+  Compare two Periods. Returns `:lt`, `:eq`, or `:gt`.
+
+  Both Periods are converted to their lowest common unit before comparing, so units
+  of different sizes compare correctly. Because this returns `:lt | :eq | :gt`, it can
+  be handed to `Enum.sort/2` directly as `Enum.sort(periods, Periods)`.
+
+  Note: `:month` can only be compared with `:month`, `:year`, and `:decade`. Comparing
+  a month with a smaller unit returns an error.
+
+  ## Examples
+
+      iex> Periods.compare(%Period{amount: 1, unit: :day}, %Period{amount: 1000, unit: :second})
+      :gt
+
+      iex> Periods.compare(%Period{amount: 60, unit: :second}, %Period{amount: 1, unit: :minute})
+      :eq
+
+      iex> Periods.compare(%Period{amount: 1, unit: :second}, %Period{amount: 1, unit: :month})
+      {:error, :invalid_unit_type}
+  """
+  @spec compare(Period.t(), Period.t()) :: :lt | :eq | :gt | error_type()
+  defdelegate compare(period_1, period_2), to: Comparison
 
   @doc """
   Convert a Period from one unit to another unit.
@@ -178,6 +214,31 @@ defmodule Periods do
   def default_unit, do: Application.get_env(Periods, :default_unit, :second)
 
   @doc """
+  Multiply a Period's amount by an integer scalar. The unit is unchanged.
+
+  ## Examples
+
+      iex> Periods.multiply(%Period{amount: 10, unit: :day}, 3)
+      %Periods.Period{amount: 30, unit: :day}
+  """
+  @spec multiply(Period.t(), integer()) :: Period.t()
+  defdelegate multiply(period, scalar), to: Computation
+
+  @doc """
+  Negate a Period's amount (flip its sign). The unit is unchanged.
+
+  ## Examples
+
+      iex> Periods.negate(%Period{amount: 10, unit: :day})
+      %Periods.Period{amount: -10, unit: :day}
+
+      iex> Periods.negate(%Period{amount: -5, unit: :second})
+      %Periods.Period{amount: 5, unit: :second}
+  """
+  @spec negate(Period.t()) :: Period.t()
+  defdelegate negate(period), to: Computation
+
+  @doc """
   Create a new Period through a variety of input types.
 
   ## Examples
@@ -207,11 +268,27 @@ defmodule Periods do
       iex> Periods.new!({100, "second"})
       %Periods.Period{amount: 100, unit: :second}
 
-      iex> Periods.new!(100, :fort_nights)
-      ** (Periods.Conversion.ConversionError) unit: bad type
+      iex> Periods.new!(%{amount: 100, unit: :fort_nights})
+      ** (Periods.Parser.ParserError) invalid unit type
   """
   @spec new!(parse_type()) :: Period.t() | ParserError
   defdelegate new!(value), to: Parser
+
+  @doc """
+  Creates a new Period from an amount and unit or raises an error.
+
+  Same as `new/2` except raises a `%ParserError{}` when unsuccessful
+
+  ## Examples
+
+      iex> Periods.new!(100, "second")
+      %Periods.Period{amount: 100, unit: :second}
+
+      iex> Periods.new!(100, :fort_nights)
+      ** (Periods.Parser.ParserError) invalid unit type
+  """
+  @spec new!(amount(), unit()) :: Period.t() | ParserError
+  defdelegate new!(amount, unit), to: Parser
 
   @doc """
   Creates a new Period.
